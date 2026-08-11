@@ -1,23 +1,27 @@
 <?php
-/* ════════════════════════════════════════════════
-   get_bookings.php — daftar reservasi lengkap untuk kasir
-   Contoh: GET /api/get_bookings.php?date=2026-07-09&key=XXX
-═══════════════════════════════════════════════════ */
 require_once __DIR__ . '/_helpers.php';
 
 checkApiKey();
 
-$date = $_GET['date'] ?? null;
+$date = isset($_GET['date']) ? $_GET['date'] : null;
 if (!$date || !isValidDate($date)) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Parameter tanggal tidak valid.']);
-    exit;
+    jsonError('Parameter tanggal tidak valid.', 400);
 }
 
 $bookings = readBookings();
-$filtered = array_values(array_filter($bookings, fn($b) => $b['date'] === $date));
 
-// Urutkan berdasarkan jam kedatangan
-usort($filtered, fn($a, $b) => strcmp($a['time'], $b['time']));
+$filtered = array_values(array_filter($bookings, function ($b) use ($date) {
+    return isset($b['date']) && $b['date'] === $date;
+}));
 
-echo json_encode(['success' => true, 'date' => $date, 'bookings' => $filtered]);
+usort($filtered, function ($a, $b) {
+    $timeA = isset($a['time']) ? $a['time'] : '';
+    $timeB = isset($b['time']) ? $b['time'] : '';
+    return strcmp($timeA, $timeB);
+});
+
+echo json_encode(array(
+    'success' => true,
+    'date' => $date,
+    'bookings' => $filtered
+));

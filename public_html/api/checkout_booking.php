@@ -1,32 +1,24 @@
 <?php
-/* ════════════════════════════════════════════════
-   checkout_booking.php — tandai reservasi selesai (checkout)
-   Dipanggil dari kasir.html
-═══════════════════════════════════════════════════ */
 require_once __DIR__ . '/_helpers.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method tidak diizinkan.']);
-    exit;
+if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+    jsonError('Method tidak diizinkan.', 405);
 }
 
 checkApiKey();
+$input = getJsonBody();
 
-$input = json_decode(file_get_contents('php://input'), true);
-$id = $input['id'] ?? null;
+$id = isset($input['id']) ? $input['id'] : null;
 if (!$id) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'ID booking wajib diisi.']);
-    exit;
+    jsonError('ID booking wajib diisi.', 400);
 }
 
 $bookings = readBookings();
 $found = false;
 
 foreach ($bookings as &$b) {
-    if ($b['id'] === $id) {
-        $b['status']      = 'selesai';
+    if (isset($b['id']) && $b['id'] === $id) {
+        $b['status'] = 'selesai';
         $b['completedAt'] = date('c');
         $found = true;
         break;
@@ -35,10 +27,8 @@ foreach ($bookings as &$b) {
 unset($b);
 
 if (!$found) {
-    http_response_code(404);
-    echo json_encode(['success' => false, 'message' => 'Booking tidak ditemukan.']);
-    exit;
+    jsonError('Booking tidak ditemukan.', 404);
 }
 
 writeBookings($bookings);
-echo json_encode(['success' => true]);
+echo json_encode(array('success' => true));

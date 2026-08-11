@@ -1,63 +1,107 @@
 <?php
-/* ════════════════════════════════════════════════
-   _helpers.php — fungsi bersama untuk semua endpoint API
-   Gambare House Reservation System (PHP + JSON file)
-═══════════════════════════════════════════════════ */
-
-// ── KONFIGURASI ──
-// PENTING: ganti API_KEY ini, dan pastikan SAMA PERSIS
-// dengan nilai API_KEY di file config.js
 define('API_KEY', '40deb31a-eeec-4fe6-82b9-dd9493a4ec3d');
 define('TOTAL_TABLES', 15);
-define('DATA_FILE', __DIR__ . '/../data/bookings.json');
+define('DATA_DIR', __DIR__ . '/../data');
+define('DATA_FILE', DATA_DIR . '/bookings.json');
 
 header('Content-Type: application/json; charset=utf-8');
 
-// ── VALIDASI API KEY ──
-// Dicek dari query string (?key=) untuk GET, atau dari body JSON untuk POST
-function checkApiKey() {
-    $key = $_GET['key'] ?? null;
+function jsonError($message, $status = 500) {
+    http_response_code($status);
+    echo json_encode(array('success' => false, 'message' => $message));
+    exit;
+}
 
-    if ($key === null && $_SERVER['REQUEST_METHOD'] === 'POST') {
-        $body = json_decode(file_get_contents('php://input'), true);
-        $key  = $body['key'] ?? null;
+function ensureDataFile() {
+    if (!is_dir(DATA_DIR)) {
+        if (!@mkdir(DATA_DIR, 0755, true) && !is_dir(DATA_DIR)) {
+            jsonError('Folder data tidak ditemukan dan gagal dibuat. Buat folder /data dan pastikan writable.', 500);
+        }
     }
 
-    if ($key !== API_KEY) {
-        http_response_code(401);
-        echo json_encode(['success' => false, 'message' => 'API key tidak valid.']);
-        exit;
+    if (!file_exists(DATA_FILE)) {
+        if (@file_put_contents(DATA_FILE, '[]') === false) {
+            jsonError('bookings.json tidak ditemukan dan gagal dibuat. Pastikan folder /data writable.', 500);
+        }
+    }
+
+    if (!is_readable(DATA_FILE)) {
+        jsonError('bookings.json tidak dapat dibaca oleh server.', 500);
     }
 }
 
-// ── BACA data booking (dengan file lock supaya aman kalau diakses bersamaan) ──
-function readBookings() {
-    if (!file_exists(DATA_FILE)) {
-        file_put_contents(DATA_FILE, '[]');
-        return [];
+function getJsonBody() {
+    static $body = null;
+    if ($body === null) {
+        $raw = file_get_contents('php://input');
+        $decoded = json_decode($raw, true);
+        $body = is_array($decoded) ? $decoded : array();
     }
-    $fp = fopen(DATA_FILE, 'r');
-    flock($fp, LOCK_SH);
+    return $body;
+}
+
+function checkApiKey() {
+    $key = isset($_GET['key']) ? $_GET['key'] : null;
+
+    if ($key === null && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $body = getJsonBody();
+        $key = isset($body['key']) ? $body['key'] : null;
+    }
+
+    if ($key !== API_KEY) {
+        jsonError('API key tidak valid.', 401);
+    }
+}
+
+function readBookings() {
+    ensureDataFile();
+
+    $fp = @fopen(DATA_FILE, 'r');
+    if (!$fp) {
+        jsonError('Gagal membuka bookings.json untuk dibaca.', 500);
+    }
+
+    if (!flock($fp, LOCK_SH)) {
+        fclose($fp);
+        jsonError('Gagal mengunci bookings.json untuk dibaca.', 500);
+    }
+
     $content = stream_get_contents($fp);
     flock($fp, LOCK_UN);
     fclose($fp);
 
     $data = json_decode($content, true);
-    return is_array($data) ? $data : [];
+    return is_array($data) ? $data : array();
 }
 
-// ── TULIS data booking (dengan exclusive lock) ──
 function writeBookings($bookings) {
-    $fp = fopen(DATA_FILE, 'c');
-    flock($fp, LOCK_EX);
+    ensureDataFile();
+
+    $fp = @fopen(DATA_FILE, 'c+');
+    if (!$fp) {
+        jsonError('Gagal membuka bookings.json untuk ditulis. Pastikan folder /data writable.', 500);
+    }
+
+    if (!flock($fp, LOCK_EX)) {
+        fclose($fp);
+        jsonError('Gagal mengunci bookings.json untuk ditulis.', 500);
+    }
+
     ftruncate($fp, 0);
     rewind($fp);
-    fwrite($fp, json_encode($bookings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+    $json = json_encode($bookings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    if ($json === false || fwrite($fp, $json) === false) {
+        flock($fp, LOCK_UN);
+        fclose($fp);
+        jsonError('Gagal menyimpan data reservasi.', 500);
+    }
+
+    fflush($fp);
     flock($fp, LOCK_UN);
     fclose($fp);
 }
 
-// ── Validasi format tanggal YYYY-MM-DD sederhana ──
 function isValidDate($date) {
     $d = DateTime::createFromFormat('Y-m-d', $date);
     return $d && $d->format('Y-m-d') === $date;
