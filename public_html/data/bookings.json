@@ -1,0 +1,16 @@
+[
+    {
+        "id": "bk_6a73505ccb0379.17790974",
+        "name": "Marko Hasbi Rahman",
+        "phone": "0816565656",
+        "date": "2026-08-05",
+        "time": "14:00",
+        "floor": "Lantai 2 (Ber-AC)",
+        "tables": 1,
+        "guests": 4,
+        "notes": "- Chicken Katsu\n- Mie Ayam",
+        "status": "selesai",
+        "createdAt": "2026-08-05T17:01:48+02:00",
+        "completedAt": "2026-08-05T17:05:21+02:00"
+    }
+]

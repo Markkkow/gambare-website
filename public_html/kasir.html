@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kasir Dashboard | Gambare House</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<script src="kasir-config.js"></script>
+<style>
+:root {
+    --brown-deep:  #2e1c15;
+    --brown-mid:   #5d4037;
+    --brown-warm:  #8d6e63;
+    --brown-light: #bcaaa4;
+    --cream:       #faf7f2;
+    --cream-alt:   #f0e9e1;
+    --accent:      #bf5500;
+    --white:       #ffffff;
+    --success:     #16a34a;
+    --warning:     #d97706;
+    --danger:      #dc2626;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; background:var(--cream-alt); color:var(--brown-deep); min-height:100vh; }
+
+/* ─── PIN GATE ─── */
+#pinGate {
+    position:fixed; inset:0; background:var(--brown-deep);
+    display:flex; align-items:center; justify-content:center;
+    z-index:9999; flex-direction:column; gap:1.25rem; padding:1.5rem;
+}
+#pinGate h1 { font-family:'Playfair Display',serif; color:var(--white); font-size:1.6rem; }
+#pinGate p  { color:var(--brown-light); font-size:.85rem; text-align:center; max-width:320px; }
+#pinInput {
+    width:220px; padding:.9rem 1rem; font-size:1.4rem; text-align:center;
+    letter-spacing:.4em; border-radius:8px; border:none; outline:none;
+}
+#pinSubmit {
+    padding:.85rem 2rem; background:var(--accent); color:var(--white);
+    border:none; border-radius:6px; font-weight:600; cursor:pointer; font-size:.9rem;
+}
+#pinSubmit:hover { background:#a04600; }
+#pinError { color:#fca5a5; font-size:.8rem; min-height:1.1rem; }
+
+/* ─── LAYOUT ─── */
+#app { display:none; max-width:1100px; margin:0 auto; padding:1.5rem 1.25rem 4rem; }
+header.topbar {
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;
+    margin-bottom:1.5rem;
+}
+.brand { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; }
+.brand span { color:var(--accent); }
+.date-picker { display:flex; align-items:center; gap:.6rem; }
+.date-picker input {
+    padding:.55rem .8rem; border-radius:6px; border:1.5px solid rgba(141,110,99,.25);
+    font-family:'Inter',sans-serif; font-size:.85rem; background:var(--white);
+}
+.btn-refresh {
+    padding:.55rem 1rem; border-radius:6px; border:none; background:var(--brown-deep);
+    color:var(--white); font-size:.8rem; cursor:pointer; font-weight:600;
+}
+.status-dot {
+    display:inline-block; width:8px; height:8px; border-radius:50%;
+    background:var(--success); margin-right:.4rem; animation:blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.sync-label { font-size:.72rem; color:var(--brown-warm); }
+
+/* ─── SUMMARY ─── */
+.summary { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
+.summary-card {
+    background:var(--white); border-radius:12px; padding:1.1rem 1.25rem;
+    box-shadow:0 4px 18px rgba(46,28,21,.06);
+}
+.summary-num { font-family:'Playfair Display',serif; font-size:1.9rem; font-weight:700; }
+.summary-label { font-size:.72rem; color:var(--brown-warm); text-transform:uppercase; letter-spacing:.06em; margin-top:.15rem; }
+.summary-num.ok { color:var(--success); }
+.summary-num.warn { color:var(--warning); }
+.summary-num.danger { color:var(--danger); }
+
+/* ─── BOOKING LIST ─── */
+.section-title { font-family:'Playfair Display',serif; font-size:1.2rem; margin-bottom:1rem; display:flex; align-items:center; gap:.6rem; }
+#bookingList { display:flex; flex-direction:column; gap:.9rem; }
+.empty-state {
+    background:var(--white); border-radius:12px; padding:2.5rem 1.5rem;
+    text-align:center; color:var(--brown-warm); font-size:.9rem;
+}
+.booking-card {
+    background:var(--white); border-radius:12px; padding:1.1rem 1.3rem;
+    box-shadow:0 3px 14px rgba(46,28,21,.05); border-left:5px solid var(--brown-light);
+    display:flex; flex-wrap:wrap; gap:1rem; align-items:center; justify-content:space-between;
+}
+.booking-card.selesai { border-left-color:var(--success); opacity:.65; }
+.booking-card.pending { border-left-color:var(--accent); }
+.b-main { flex:1; min-width:220px; }
+.b-name { font-weight:600; font-size:1rem; margin-bottom:.15rem; display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; }
+.b-detail { font-size:.82rem; color:var(--brown-mid); line-height:1.6; }
+.b-detail strong { color:var(--brown-deep); }
+.b-notes { font-size:.78rem; color:var(--brown-warm); font-style:italic; margin-top:.3rem; }
+.b-badge {
+    font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    padding:.3rem .65rem; border-radius:20px;
+}
+.b-badge.pending { background:#fef3c7; color:#92400e; }
+.b-badge.selesai { background:#dcfce7; color:#15803d; }
+.b-actions { display:flex; align-items:center; gap:.6rem; }
+.btn-checkout {
+    padding:.55rem 1rem; border-radius:6px; border:none; background:var(--success);
+    color:var(--white); font-size:.78rem; font-weight:600; cursor:pointer; white-space:nowrap;
+}
+.btn-checkout:hover { background:#128a3d; }
+.btn-checkout:disabled { opacity:.5; cursor:not-allowed; }
+.wa-link { font-size:.78rem; color:#128C7E; text-decoration:none; font-weight:600; }
+.wa-link:hover { text-decoration:underline; }
+.loading-msg { text-align:center; padding:2rem; color:var(--brown-warm); font-size:.85rem; }
+
+@media(max-width:768px){
+    .summary{ grid-template-columns:repeat(2,1fr); }
+    .booking-card{ flex-direction:column; align-items:flex-start; }
+    .b-actions{ width:100%; justify-content:space-between; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── PIN GATE ── -->
+<div id="pinGate">
+    <h1>Kasir Gambare House</h1>
+    <p>Masukkan PIN untuk mengakses dashboard reservasi. (Ganti PIN default di file config.js)</p>
+    <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="••••">
+    <button id="pinSubmit">Masuk</button>
+    <div id="pinError"></div>
+</div>
+
+<!-- ── APP ── -->
+<div id="app">
+    <header class="topbar">
+        <div class="brand">Gambare House <span>Kasir</span></div>
+        <div class="date-picker">
+            <label for="viewDate" style="font-size:.8rem;color:var(--brown-warm)">Tanggal:</label>
+            <input type="date" id="viewDate">
+            <button class="btn-refresh" id="btnToday">Hari Ini</button>
+        </div>
+    </header>
+    <div class="sync-label" style="margin-bottom:1rem;"><span class="status-dot"></span>Auto-refresh tiap 5 detik</div>
+
+    <div class="summary">
+        <div class="summary-card">
+            <div class="summary-num" id="sumTotal">15</div>
+            <div class="summary-label">Total Meja</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-num danger" id="sumBooked">0</div>
+            <div class="summary-label">Meja Terpakai</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-num ok" id="sumAvail">15</div>
+            <div class="summary-label">Meja Tersedia</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-num" id="sumBookings">0</div>
+            <div class="summary-label">Jumlah Reservasi</div>
+        </div>
+    </div>
+
+    <h2 class="section-title">Daftar Reservasi</h2>
+    <div id="bookingList">
+        <div class="loading-msg">Memuat data…</div>
+    </div>
+</div>
+
+<script>
+const TOTAL_TABLES = 15;
+let pollTimer = null;
+
+/* ════════════════════════════════════════════════
+   PIN GATE
+═══════════════════════════════════════════════════ */
+const pinGate  = document.getElementById('pinGate');
+const pinInput = document.getElementById('pinInput');
+const pinError = document.getElementById('pinError');
+
+function tryUnlock() {
+    if (pinInput.value === KASIR_PIN) {
+        pinGate.style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        sessionStorage.setItem('kasir_unlocked', '1');
+        initDashboard();
+    } else {
+        pinError.textContent = 'PIN salah, coba lagi.';
+        pinInput.value = '';
+        pinInput.focus();
+    }
+}
+document.getElementById('pinSubmit').addEventListener('click', tryUnlock);
+pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
+
+if (sessionStorage.getItem('kasir_unlocked') === '1') {
+    pinGate.style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initDashboard();
+}
+
+/* ════════════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════════════ */
+let currentDate = null;
+
+function initDashboard() {
+    const viewDate  = document.getElementById('viewDate');
+    const today     = new Date().toISOString().split('T')[0];
+    viewDate.value  = today;
+
+    document.getElementById('btnToday').addEventListener('click', () => {
+        viewDate.value = new Date().toISOString().split('T')[0];
+        loadBookings(viewDate.value);
+    });
+    viewDate.addEventListener('change', () => loadBookings(viewDate.value));
+
+    loadBookings(today);
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(() => loadBookings(currentDate), 5000);
+}
+
+async function loadBookings(dateStr) {
+    currentDate = dateStr;
+    try {
+        const res = await fetch('api/get_bookings.php?date=' + encodeURIComponent(dateStr) + '&key=' + encodeURIComponent(API_KEY));
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'Gagal memuat data');
+
+        renderBookings(data.bookings);
+        renderSummary(data.bookings);
+    } catch (err) {
+        console.error(err);
+        document.getElementById('bookingList').innerHTML =
+            '<div class="empty-state">Gagal memuat data: ' + err.message + '<br>Pastikan file di folder /api sudah ter-upload & API_KEY di config.js cocok dengan api/_helpers.php</div>';
+    }
+}
+
+function renderSummary(bookings) {
+    const pending = bookings.filter(b => b.status === 'pending');
+    const booked  = pending.reduce((sum, b) => sum + (Number(b.tables) || 0), 0);
+    const avail   = Math.max(0, TOTAL_TABLES - booked);
+
+    document.getElementById('sumTotal').textContent    = TOTAL_TABLES;
+    document.getElementById('sumBooked').textContent   = booked;
+    document.getElementById('sumAvail').textContent    = avail;
+    document.getElementById('sumBookings').textContent = bookings.length;
+}
+
+function renderBookings(bookings) {
+    const list = document.getElementById('bookingList');
+    if (bookings.length === 0) {
+        list.innerHTML = '<div class="empty-state">Belum ada reservasi untuk tanggal ini.</div>';
+        return;
+    }
+
+    list.innerHTML = bookings.map(b => {
+        const isPending = b.status === 'pending';
+        const waHref = 'https://wa.me/' + (b.phone || '').replace(/\D/g, '');
+        return `
+        <div class="booking-card ${isPending ? 'pending' : 'selesai'}">
+            <div class="b-main">
+                <div class="b-name">${escapeHtml(b.name || '-')}
+                    <span class="b-badge ${isPending ? 'pending' : 'selesai'}">${isPending ? 'Pending' : 'Selesai'}</span>
+                </div>
+                <div class="b-detail">
+                    <strong>${b.time || '-'}</strong> WIB &nbsp;|&nbsp;
+                    <strong>${b.tables || 0}</strong> meja &nbsp;|&nbsp;
+                    <strong>${b.guests || '-'}</strong> tamu
+                </div>
+                <div class="b-detail">${escapeHtml(b.floor || '-')}</div>
+                <div class="b-detail">${escapeHtml(b.phone || '-')}
+                    &nbsp; <a class="wa-link" href="${waHref}" target="_blank" rel="noopener">Chat WA →</a>
+                </div>
+                ${b.notes ? `<div class="b-notes">${escapeHtml(b.notes)}</div>` : ''}
+            </div>
+            <div class="b-actions">
+                ${isPending
+                    ? `<button class="btn-checkout" data-id="${b.id}" onclick="checkoutBooking('${b.id}', this)">Tandai Selesai</button>`
+                    : `<span style="font-size:.78rem;color:var(--brown-warm)">Sudah checkout</span>`
+                }
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+async function checkoutBooking(id, btnEl) {
+    if (!confirm('Tandai reservasi ini selesai? Meja akan otomatis kembali tersedia.')) return;
+    btnEl.disabled = true;
+    btnEl.textContent = 'Memproses…';
+    try {
+        const res = await fetch('api/checkout_booking.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, key: API_KEY })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'Gagal update status');
+        loadBookings(currentDate);
+    } catch (err) {
+        alert('Gagal update status: ' + err.message);
+        btnEl.disabled = false;
+        btnEl.textContent = 'Tandai Selesai';
+    }
+}
+</script>
+</body>
+</html>
