@@ -190,7 +190,7 @@
         .btn-wa:hover { background: #128C7E; transform:translateY(-2px); box-shadow:0 8px 22px rgba(37,211,102,.28); }
 
         /* ─── SECTIONS ─── */
-        .section { position:relative; z-index:1; padding:5.5rem 5%; text-align:center; }
+        .section { position:relative; z-index:1; padding:5.5rem 5%; text-align:center; scroll-margin-top: 110px; }
         .section.alt { background:var(--cream-alt); }
         .eyebrow { display:inline-block; font-size:.7rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-bottom:.7rem; }
         .section-title { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3.5vw,2.6rem); font-weight:700; color:var(--brown-deep); margin-bottom:.7rem; }
@@ -469,6 +469,28 @@
             .section{ padding:3.5rem 6%; }
             .section-title{ font-size:clamp(1.6rem,5vw,2.1rem); }
             .form-box{ padding:1.5rem; }
+
+            /* Input tanggal dibuat lebih compact di handphone */
+            #bDate{
+                display:block;
+                width:100%;
+                min-width:0;
+                height:42px;
+                padding:.55rem .75rem;
+                font-size:.84rem;
+                line-height:1.2;
+                -webkit-appearance:none;
+                appearance:none;
+            }
+            #bDate::-webkit-date-and-time-value{
+                text-align:left;
+                min-height:1.2em;
+            }
+            #bDate::-webkit-calendar-picker-indicator{
+                margin-left:auto;
+                padding:2px;
+            }
+
             .pdf-viewer{ height:420px; }
 
             .modal-box{ padding:1.4rem; border-radius:12px; }
@@ -1345,19 +1367,38 @@ if (navToggle) {
     });
 }
 if (navBackdrop) navBackdrop.addEventListener('click', closeMobileNav);
-navLinksEl.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileNav));
 window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMobileNav(); });
 
 /* ════════════════════════════════════════════════
-   SMOOTH SCROLL
+   SMOOTH SCROLL + MOBILE NAV
+   Tutup hamburger dulu, baru scroll dengan offset navbar.
+   Ini lebih stabil di Safari/Chrome mobile daripada scrollIntoView
+   saat body masih terkunci (overflow:hidden).
 ═══════════════════════════════════════════════════ */
+function scrollToSection(target) {
+    if (!target) return;
+    const navHeight = nav ? nav.getBoundingClientRect().height : 0;
+    const top = target.getBoundingClientRect().top + window.pageYOffset - navHeight - 12;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+}
+
 document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
         const href = a.getAttribute('href');
-        if (href === '#') return;
+        if (!href || href === '#') return;
+
+        const target = document.querySelector(href);
+        if (!target) return;
+
         e.preventDefault();
-        const t = document.querySelector(href);
-        if (t) t.scrollIntoView({ behavior: 'smooth' });
+
+        const wasMobileMenuOpen = navLinksEl && navLinksEl.classList.contains('open');
+        if (wasMobileMenuOpen) closeMobileNav();
+
+        // Tunggu satu frame agar body unlock & drawer benar-benar mulai menutup.
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => scrollToSection(target));
+        });
     });
 });
 
