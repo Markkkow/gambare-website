@@ -657,7 +657,7 @@
     <!-- TABLE AVAILABILITY IN HERO -->
     <div class="table-banner" id="heroBanner">
         <div class="table-status-item">
-            <div class="table-big-num available" id="heroAvailNum">40</div>
+            <div class="table-big-num available" id="heroAvailNum">15</div>
             <div class="table-label">Meja Tersedia</div>
         </div>
         <div class="table-divider"></div>
@@ -741,7 +741,7 @@
                         <div class="tcb-sub" id="sideCounterSub">Pilih jumlah meja di form →</div>
                     </div>
                 </div>
-                <div class="tcb-count ok" id="sideCounterNum">40</div>
+                <div class="tcb-count ok" id="sideCounterNum">15</div>
             </div>
         </div>
 
@@ -806,7 +806,7 @@
                     <label>Jumlah Meja yang Dipesan</label>
                     <div class="stepper-wrap">
                         <button type="button" class="stepper-btn" id="stepDown">−</button>
-                        <input type="number" id="bTables" class="stepper-input" min="1" max="40" value="1" readonly>
+                        <input type="number" id="bTables" class="stepper-input" min="1" max="15" value="1" readonly>
                         <button type="button" class="stepper-btn" id="stepUp">+</button>
                     </div>
                     <div style="font-size:.75rem; color:var(--brown-warm); margin-top:.35rem;" id="tableHint">
@@ -907,7 +907,7 @@ function getAvailableTables() {
 async function refreshAvailabilityFromServer(dateStr) {
     currentViewDate = dateStr;
     try {
-        const res  = await fetch('api/get_availability.php?date=' + encodeURIComponent(dateStr) + '&key=' + encodeURIComponent(API_KEY));
+        const res  = await fetch('/api/get-availability?date=' + encodeURIComponent(dateStr) + '&key=' + encodeURIComponent(API_KEY));
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         liveBookedCount = Number(data.booked) || 0;
@@ -930,7 +930,7 @@ function startAvailabilityPolling(dateStr) {
    "Buka WhatsApp & Kirim" di modal konfirmasi) */
 async function saveBookingToServer(data) {
     try {
-        const res = await fetch('api/save_booking.php', {
+        const res = await fetch('/api/save-booking', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...data, key: API_KEY })

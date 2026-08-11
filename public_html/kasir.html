@@ -226,7 +226,7 @@ function initDashboard() {
 async function loadBookings(dateStr) {
     currentDate = dateStr;
     try {
-        const res = await fetch('api/get_bookings.php?date=' + encodeURIComponent(dateStr) + '&key=' + encodeURIComponent(API_KEY));
+        const res = await fetch('/api/get-bookings?date=' + encodeURIComponent(dateStr) + '&key=' + encodeURIComponent(API_KEY));
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         if (!data.success) throw new Error(data.message || 'Gagal memuat data');
@@ -295,11 +295,11 @@ function escapeHtml(str) {
 }
 
 async function checkoutBooking(id, btnEl) {
-    if (!confirm('Tandai reservasi ini selesai? Meja akan otomatis kembali tersedia.')) return;
+    if (!confirm('Selesaikan reservasi ini? Data booking akan dihapus dan meja otomatis kembali tersedia.')) return;
     btnEl.disabled = true;
-    btnEl.textContent = 'Memproses…';
+    btnEl.textContent = 'Menghapus…';
     try {
-        const res = await fetch('api/checkout_booking.php', {
+        const res = await fetch('/api/checkout-booking', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id, key: API_KEY })
