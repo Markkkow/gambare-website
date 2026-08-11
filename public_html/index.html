@@ -444,10 +444,14 @@
             }
             .nav-links.open{ transform:translateX(0); }
             .nav-links li{ width:100%; padding:.9rem 0; border-bottom:1px solid rgba(141,110,99,.12); }
-            .nav-links a{ font-size:.95rem; }
+            .nav-links a{ font-size:.95rem; display:block; width:100%; padding:.15rem 0; touch-action:manipulation; }
+            .nav-toggle{ touch-action:manipulation; }
             .nav-backdrop{
                 display:none; position:fixed; inset:0; background:rgba(46,28,21,.4);
-                z-index:1040; opacity:0; pointer-events:none; transition:opacity .3s;
+                /* Harus di bawah <nav> (nav z-index:1000).
+                   Sebelumnya 1040 sehingga backdrop menutup link hamburger
+                   dan menyerap tap Menu / Booking / Ulasan di handphone. */
+                z-index:999; opacity:0; pointer-events:none; transition:opacity .3s;
             }
             .nav-backdrop.open{ display:block; opacity:1; pointer-events:all; }
             .logo img{ max-height:56px; }
