@@ -1,6 +1,7 @@
 import { json, checkPublicKey, supabaseRest } from '../lib/supabase.js';
 
-export async function POST(request) {
+async function checkoutBooking(request) {
+  if (request.method !== 'POST') return json({ success: false, message: 'Method tidak diizinkan.' }, 405);
   try {
     let input;
     try { input = await request.json(); }
@@ -10,13 +11,13 @@ export async function POST(request) {
     if (!input.id) return json({ success: false, message: 'ID booking wajib diisi.' }, 400);
 
     await supabaseRest(`bookings?id=eq.${encodeURIComponent(input.id)}`, {
-      method: 'DELETE',
-      headers: { Prefer: 'return=minimal' }
+      method: 'DELETE', headers: { Prefer: 'return=minimal' }
     });
-
     return json({ success: true });
   } catch (err) {
     console.error(err);
     return json({ success: false, message: err.message || 'Gagal menghapus booking.' }, 500);
   }
 }
+
+export default { fetch: checkoutBooking };
