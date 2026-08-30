@@ -1,6 +1,6 @@
 import { json, checkPublicKey, supabaseRest, validDate } from '../lib/supabase.js';
 
-async function getBookings(request) {
+export async function GET(request) {
   try {
     if (!checkPublicKey(request)) return json({ success: false, message: 'API key tidak valid.' }, 401);
 
@@ -13,9 +13,17 @@ async function getBookings(request) {
     );
 
     const bookings = (rows || []).map(b => ({
-      id: b.id, name: b.name, phone: b.phone, date: b.date,
-      time: String(b.time || '').slice(0, 5), floor: b.floor, tables: b.tables,
-      guests: b.guests, notes: b.notes || '', status: 'pending', createdAt: b.created_at
+      id: b.id,
+      name: b.name,
+      phone: b.phone,
+      date: b.date,
+      time: String(b.time || '').slice(0, 5),
+      floor: b.floor,
+      tables: b.tables,
+      guests: b.guests,
+      notes: b.notes || '',
+      status: 'pending',
+      createdAt: b.created_at
     }));
 
     return json({ success: true, date, bookings });
@@ -24,5 +32,3 @@ async function getBookings(request) {
     return json({ success: false, message: err.message || 'Gagal memuat booking.' }, 500);
   }
 }
-
-export default { fetch: getBookings };
