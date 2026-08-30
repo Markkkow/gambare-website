@@ -4,315 +4,201 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kasir Dashboard | Gambare House</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="config.js"></script>
 <script src="kasir-config.js"></script>
 <style>
-:root {
-    --brown-deep:  #2e1c15;
-    --brown-mid:   #5d4037;
-    --brown-warm:  #8d6e63;
-    --brown-light: #bcaaa4;
-    --cream:       #faf7f2;
-    --cream-alt:   #f0e9e1;
-    --accent:      #bf5500;
-    --white:       #ffffff;
-    --success:     #16a34a;
-    --warning:     #d97706;
-    --danger:      #dc2626;
+:root{
+  --bg:#f6f5f3;--surface:#fff;--surface-soft:#fafafa;--line:#e8e6e3;
+  --text:#303033;--muted:#77777b;--muted-2:#9a9a9e;--dark:#292a2d;
+  --brown:#8b7668;--brown-soft:#eee8e3;--green:#708d73;--green-soft:#e8f0e8;
+  --blue:#6e88a1;--blue-soft:#e8eef3;--gray-soft:#eeeeee;--danger:#b65d5d;
+  --shadow:0 8px 28px rgba(35,32,29,.055);--radius:14px;
 }
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Inter',sans-serif; background:var(--cream-alt); color:var(--brown-deep); min-height:100vh; }
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+button,input{font:inherit}
+button{cursor:pointer}
 
-/* ─── PIN GATE ─── */
-#pinGate {
-    position:fixed; inset:0; background:var(--brown-deep);
-    display:flex; align-items:center; justify-content:center;
-    z-index:9999; flex-direction:column; gap:1.25rem; padding:1.5rem;
-}
-#pinGate h1 { font-family:'Playfair Display',serif; color:var(--white); font-size:1.6rem; }
-#pinGate p  { color:var(--brown-light); font-size:.85rem; text-align:center; max-width:320px; }
-#pinInput {
-    width:220px; padding:.9rem 1rem; font-size:1.4rem; text-align:center;
-    letter-spacing:.4em; border-radius:8px; border:none; outline:none;
-}
-#pinSubmit {
-    padding:.85rem 2rem; background:var(--accent); color:var(--white);
-    border:none; border-radius:6px; font-weight:600; cursor:pointer; font-size:.9rem;
-}
-#pinSubmit:hover { background:#a04600; }
-#pinError { color:#fca5a5; font-size:.8rem; min-height:1.1rem; }
+/* LOGIN */
+#pinGate{position:fixed;inset:0;z-index:9999;background:#f4f2ef;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{width:min(410px,100%);background:#fff;border:1px solid var(--line);border-radius:20px;padding:36px;box-shadow:0 20px 60px rgba(40,35,30,.08);text-align:center}
+.login-logo{width:76px;height:76px;object-fit:contain;margin:0 auto 16px}
+.login-card h1{font-size:21px;font-weight:600;letter-spacing:-.02em;margin-bottom:7px}
+.login-card p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+#pinInput{width:100%;height:48px;border:1px solid #ddd9d5;border-radius:10px;text-align:center;letter-spacing:.35em;font-size:18px;outline:none;background:#faf9f8}
+#pinInput:focus{border-color:#a99b91;box-shadow:0 0 0 3px rgba(139,118,104,.1)}
+#pinSubmit{width:100%;height:46px;border:0;border-radius:10px;background:var(--dark);color:#fff;font-weight:600;margin-top:12px}
+#pinSubmit:hover{background:#1f2022}
+#pinError{min-height:20px;color:var(--danger);font-size:12px;margin-top:10px}
 
-/* ─── LAYOUT ─── */
-#app { display:none; max-width:1100px; margin:0 auto; padding:1.5rem 1.25rem 4rem; }
-header.topbar {
-    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;
-    margin-bottom:1.5rem;
-}
-.brand { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; }
-.brand span { color:var(--accent); }
-.date-picker { display:flex; align-items:center; gap:.6rem; }
-.date-picker input {
-    padding:.55rem .8rem; border-radius:6px; border:1.5px solid rgba(141,110,99,.25);
-    font-family:'Inter',sans-serif; font-size:.85rem; background:var(--white);
-}
-.btn-refresh {
-    padding:.55rem 1rem; border-radius:6px; border:none; background:var(--brown-deep);
-    color:var(--white); font-size:.8rem; cursor:pointer; font-weight:600;
-}
-.status-dot {
-    display:inline-block; width:8px; height:8px; border-radius:50%;
-    background:var(--success); margin-right:.4rem; animation:blink 2s infinite;
-}
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-.sync-label { font-size:.72rem; color:var(--brown-warm); }
+/* APP */
+#app{display:none;min-height:100vh}
+.layout{display:grid;grid-template-columns:238px minmax(0,1fr);min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;background:#fbfaf9;border-right:1px solid var(--line);padding:28px 14px 18px;display:flex;flex-direction:column}
+.logo-wrap{display:flex;align-items:center;gap:10px;padding:0 13px 26px}
+.logo-wrap img{width:45px;height:45px;object-fit:contain}
+.logo-text{font-weight:700;line-height:1.05;letter-spacing:.05em;font-size:16px}
+.logo-text small{display:block;font-size:8px;letter-spacing:.2em;font-weight:500;color:var(--muted);margin-top:4px}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav-item{height:45px;border-radius:10px;display:flex;align-items:center;gap:12px;padding:0 13px;color:#55555a;text-decoration:none;font-size:13px;font-weight:500}
+.nav-item svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.7;fill:none;flex:none}
+.nav-item.active,.nav-item:hover{background:#fff;color:#39393c;box-shadow:0 4px 15px rgba(40,35,30,.045)}
+.nav-item.active{font-weight:600}
+.nav-divider{height:1px;background:var(--line);margin:20px 0}
+.sidebar-bottom{margin-top:auto}
+.staff-card{padding:13px;border:1px solid var(--line);border-radius:11px;background:#fff;margin-bottom:10px}
+.staff-card strong{display:block;font-size:12px;font-weight:600;margin-bottom:4px}
+.staff-card span{font-size:11px;color:var(--muted)}
+.logout{color:#777}
 
-/* ─── SUMMARY ─── */
-.summary { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
-.summary-card {
-    background:var(--white); border-radius:12px; padding:1.1rem 1.25rem;
-    box-shadow:0 4px 18px rgba(46,28,21,.06);
-}
-.summary-num { font-family:'Playfair Display',serif; font-size:1.9rem; font-weight:700; }
-.summary-label { font-size:.72rem; color:var(--brown-warm); text-transform:uppercase; letter-spacing:.06em; margin-top:.15rem; }
-.summary-num.ok { color:var(--success); }
-.summary-num.warn { color:var(--warning); }
-.summary-num.danger { color:var(--danger); }
+.main{min-width:0;padding:24px 28px 34px;max-width:1500px;width:100%}
+.topbar{height:42px;display:flex;align-items:center;justify-content:flex-end;color:var(--muted);font-size:12px;gap:10px;margin-bottom:18px}
+.topbar .dot{width:6px;height:6px;background:#a69b92;border-radius:50%}
+.hero{background:#fff;border:1px solid var(--line);border-radius:16px;min-height:122px;padding:24px 26px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:var(--shadow);margin-bottom:18px}
+.hero h1{font-size:21px;font-weight:600;letter-spacing:-.025em;margin-bottom:6px}
+.hero p{font-size:13px;color:var(--muted)}
+.date-box{min-width:240px;border:1px solid var(--line);border-radius:11px;padding:10px 13px;background:#fff}
+.date-label{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-bottom:5px}
+.date-label svg{width:17px;height:17px;stroke:#666;fill:none;stroke-width:1.7}
+.date-row{display:flex;align-items:center;gap:8px}
+#viewDate{border:0;outline:none;background:transparent;color:var(--text);font-size:13px;font-weight:600;width:100%}
+#btnToday{border:0;background:transparent;color:var(--muted);font-size:11px;white-space:nowrap}
+#btnToday:hover{color:var(--text)}
 
-/* ─── BOOKING LIST ─── */
-.section-title { font-family:'Playfair Display',serif; font-size:1.2rem; margin-bottom:1rem; display:flex; align-items:center; gap:.6rem; }
-#bookingList { display:flex; flex-direction:column; gap:.9rem; }
-.empty-state {
-    background:var(--white); border-radius:12px; padding:2.5rem 1.5rem;
-    text-align:center; color:var(--brown-warm); font-size:.9rem;
-}
-.booking-card {
-    background:var(--white); border-radius:12px; padding:1.1rem 1.3rem;
-    box-shadow:0 3px 14px rgba(46,28,21,.05); border-left:5px solid var(--brown-light);
-    display:flex; flex-wrap:wrap; gap:1rem; align-items:center; justify-content:space-between;
-}
-.booking-card.selesai { border-left-color:var(--success); opacity:.65; }
-.booking-card.pending { border-left-color:var(--accent); }
-.b-main { flex:1; min-width:220px; }
-.b-name { font-weight:600; font-size:1rem; margin-bottom:.15rem; display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; }
-.b-detail { font-size:.82rem; color:var(--brown-mid); line-height:1.6; }
-.b-detail strong { color:var(--brown-deep); }
-.b-notes { font-size:.78rem; color:var(--brown-warm); font-style:italic; margin-top:.3rem; }
-.b-badge {
-    font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
-    padding:.3rem .65rem; border-radius:20px;
-}
-.b-badge.pending { background:#fef3c7; color:#92400e; }
-.b-badge.selesai { background:#dcfce7; color:#15803d; }
-.b-actions { display:flex; align-items:center; gap:.6rem; }
-.btn-checkout {
-    padding:.55rem 1rem; border-radius:6px; border:none; background:var(--success);
-    color:var(--white); font-size:.78rem; font-weight:600; cursor:pointer; white-space:nowrap;
-}
-.btn-checkout:hover { background:#128a3d; }
-.btn-checkout:disabled { opacity:.5; cursor:not-allowed; }
-.wa-link { font-size:.78rem; color:#128C7E; text-decoration:none; font-weight:600; }
-.wa-link:hover { text-decoration:underline; }
-.loading-msg { text-align:center; padding:2rem; color:var(--brown-warm); font-size:.85rem; }
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:18px}
+.summary-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;min-height:105px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px}
+.summary-icon{width:46px;height:46px;border-radius:11px;display:grid;place-items:center;flex:none}
+.summary-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6}
+.summary-icon.total{background:var(--brown-soft);color:#857064}.summary-icon.pending{background:var(--green-soft);color:#708d73}.summary-icon.active{background:var(--blue-soft);color:#6e88a1}.summary-icon.done{background:var(--gray-soft);color:#707074}
+.summary-label{font-size:12px;color:#68686c;margin-bottom:6px}.summary-num{font-size:23px;font-weight:600;letter-spacing:-.03em}.summary-sub{font-size:10px;color:var(--muted-2);margin-top:3px}
 
-@media(max-width:768px){
-    .summary{ grid-template-columns:repeat(2,1fr); }
-    .booking-card{ flex-direction:column; align-items:flex-start; }
-    .b-actions{ width:100%; justify-content:space-between; }
-}
+.content-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,.9fr);gap:18px;align-items:stretch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.panel-head{min-height:65px;padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panel-title{font-size:17px;font-weight:600;letter-spacing:-.02em}.panel-count{font-size:11px;color:var(--muted);background:#f3f2f1;border:1px solid var(--line);border-radius:20px;padding:5px 9px}
+.panel-action{font-size:11px;color:#555;background:#fafafa;border:1px solid var(--line);border-radius:8px;padding:8px 11px}
+.panel-action:hover{background:#f1f0ef}
+#bookingList{padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:350px}
+.booking-card{border:1px solid var(--line);border-radius:11px;padding:14px 15px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;background:#fff;transition:.15s ease}
+.booking-card:hover{box-shadow:0 5px 16px rgba(40,35,30,.05);transform:translateY(-1px)}
+.booking-card.pending{border-left:3px solid #9b826f}.booking-card.selesai{border-left:3px solid #7e9a80;opacity:.72}
+.b-name{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:7px;flex-wrap:wrap}.b-detail{font-size:11px;color:var(--muted);line-height:1.75}.b-detail strong{color:#4b4b4f;font-weight:600}.b-notes{font-size:11px;color:var(--muted);margin-top:5px}
+.b-badge{font-size:9px;font-weight:600;padding:4px 7px;border-radius:20px}.b-badge.pending{background:#f4ece5;color:#856d5e}.b-badge.selesai{background:#e8f0e8;color:#668069}
+.b-actions{display:flex;align-items:center;gap:9px}.btn-checkout{border:0;background:#333438;color:#fff;border-radius:8px;padding:9px 12px;font-size:10px;font-weight:600}.btn-checkout:hover{background:#222326}.btn-checkout:disabled{opacity:.5;cursor:not-allowed}.wa-link{color:#6d8c77;text-decoration:none;font-size:10px;font-weight:600}.wa-link:hover{text-decoration:underline}
+.empty-state{min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:12px;line-height:1.7;padding:30px}.empty-icon{width:70px;height:70px;border-radius:50%;background:#f5f4f2;display:grid;place-items:center;margin-bottom:14px}.empty-icon svg{width:32px;height:32px;stroke:#999;fill:none;stroke-width:1.4}.empty-state strong{font-size:14px;color:#4a4a4d;font-weight:600;display:block;margin-bottom:3px}.refresh-inline{margin-top:14px;border:1px solid var(--line);background:#fafafa;border-radius:8px;padding:8px 13px;font-size:11px;color:#555}
+
+.latest-list{padding:7px 16px 14px}.latest-item{padding:13px 6px;border-bottom:1px solid #f0efed}.latest-item:last-child{border-bottom:0}.latest-top{display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:600;margin-bottom:5px}.latest-meta{font-size:10px;color:var(--muted);line-height:1.6}.latest-status{font-size:9px;color:#856d5e;background:#f4ece5;border-radius:20px;padding:3px 7px;white-space:nowrap}
+.latest-empty{padding:70px 20px;text-align:center;color:var(--muted);font-size:12px}.latest-empty svg{width:45px;height:45px;stroke:#aaa;fill:none;stroke-width:1.4;margin-bottom:10px}
+
+.info-panel{margin-top:18px;padding:20px 22px}.info-title{font-size:17px;font-weight:600;margin-bottom:17px}.info-grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);padding-top:18px}.info-item{display:flex;align-items:center;gap:13px;padding:3px 18px;border-right:1px solid var(--line)}.info-item:first-child{padding-left:0}.info-item:last-child{border-right:0}.info-item svg{width:28px;height:28px;stroke:#666;fill:none;stroke-width:1.4;flex:none}.info-item span{display:block;font-size:10px;color:var(--muted);margin-bottom:4px}.info-item strong{font-size:13px;font-weight:600}.footer{text-align:center;color:#999;font-size:10px;padding:25px 0 5px}
+.loading-msg{text-align:center;padding:110px 20px;color:var(--muted);font-size:12px}
+
+
+@media(max-width:1100px){.layout{grid-template-columns:190px 1fr}.main{padding:20px}.summary{grid-template-columns:repeat(2,1fr)}.content-grid{grid-template-columns:1fr}.latest-panel{display:none}.info-grid{grid-template-columns:repeat(2,1fr);gap:14px}.info-item{border-right:0}.info-item:nth-child(odd){padding-left:0}}
+@media(max-width:720px){.layout{display:block}.sidebar{position:relative;height:auto;padding:12px 12px 10px;border-right:0;border-bottom:1px solid var(--line)}.logo-wrap{padding:0 8px 10px}.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.nav-item{height:38px;padding:0 8px;justify-content:center;font-size:11px}.nav-item:nth-child(n+4){display:none}.nav-divider,.sidebar-bottom{display:none}.main{padding:13px}.topbar{height:25px;margin-bottom:10px}.hero{padding:18px;display:block}.hero h1{font-size:18px}.date-box{margin-top:15px;min-width:0}.summary{gap:9px}.summary-card{padding:13px;min-height:88px;gap:9px}.summary-icon{width:38px;height:38px}.summary-icon svg{width:18px;height:18px}.summary-label{font-size:10px}.summary-num{font-size:19px}.summary-sub{font-size:9px}.panel-head{padding:15px}.panel-title{font-size:15px}#bookingList{padding:10px;min-height:260px}.booking-card{grid-template-columns:1fr}.b-actions{justify-content:flex-start}.info-panel{padding:17px}.info-grid{grid-template-columns:1fr 1fr}.info-item{padding:5px 0}.login-card{padding:28px 22px}}
+@media(max-width:430px){.summary{grid-template-columns:1fr 1fr}.summary-card{padding:11px}.summary-icon{display:none}.info-grid{grid-template-columns:1fr}.info-item{border-bottom:1px solid var(--line);padding-bottom:10px}.info-item:last-child{border-bottom:0}}
 </style>
 </head>
 <body>
 
-<!-- ── PIN GATE ── -->
 <div id="pinGate">
+  <div class="login-card">
+    <img class="login-logo" src="images/logo/Untitled_Artwork-1.png" alt="Gambare House">
     <h1>Kasir Gambare House</h1>
-    <p>Masukkan PIN untuk mengakses dashboard reservasi. (Ganti PIN default di file config.js)</p>
-    <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="••••">
-    <button id="pinSubmit">Masuk</button>
+    <p>Masukkan PIN untuk mengakses dashboard reservasi.</p>
+    <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="••••••">
+    <button id="pinSubmit">Masuk ke Dashboard</button>
     <div id="pinError"></div>
+  </div>
 </div>
 
-<!-- ── APP ── -->
 <div id="app">
-    <header class="topbar">
-        <div class="brand">Gambare House <span>Kasir</span></div>
-        <div class="date-picker">
-            <label for="viewDate" style="font-size:.8rem;color:var(--brown-warm)">Tanggal:</label>
-            <input type="date" id="viewDate">
-            <button class="btn-refresh" id="btnToday">Hari Ini</button>
-        </div>
-    </header>
-    <div class="sync-label" style="margin-bottom:1rem;"><span class="status-dot"></span>Auto-refresh tiap 5 detik</div>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo-wrap">
+        <img src="images/logo/Untitled_Artwork-1.png" alt="Gambare House">
+        <div class="logo-text">GAMBARE<small>HOUSE</small></div>
+      </div>
+      <nav class="nav">
+        <a class="nav-item active" href="#dashboard"><svg viewBox="0 0 24 24"><path d="m4 10 8-6 8 6v9a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z"/></svg>Dashboard</a>
+        <a class="nav-item" href="#today"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 9h16"/></svg>Booking Hari Ini</a>
+        <a class="nav-item" href="#all"><svg viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h14"/><circle cx="3" cy="6" r=".7"/><circle cx="3" cy="12" r=".7"/><circle cx="3" cy="18" r=".7"/></svg>Semua Booking</a>
+        <a class="nav-item" href="#done"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>Pesan Selesai</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="nav-divider"></div>
+        <div class="staff-card"><strong>Gambare House</strong><span>Ngopi · Nongkrong · Gambare</span></div>
+        <a class="nav-item logout" href="javascript:void(0)" onclick="logoutKasir()"><svg viewBox="0 0 24 24"><path d="M9 5H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h4M14 8l4 4-4 4M9 12h9"/></svg>Keluar</a>
+      </div>
+    </aside>
 
-    <div class="summary">
-        <div class="summary-card">
-            <div class="summary-num" id="sumTotal">15</div>
-            <div class="summary-label">Total Meja</div>
-        </div>
-        <div class="summary-card">
-            <div class="summary-num danger" id="sumBooked">0</div>
-            <div class="summary-label">Meja Terpakai</div>
-        </div>
-        <div class="summary-card">
-            <div class="summary-num ok" id="sumAvail">15</div>
-            <div class="summary-label">Meja Tersedia</div>
-        </div>
-        <div class="summary-card">
-            <div class="summary-num" id="sumBookings">0</div>
-            <div class="summary-label">Jumlah Reservasi</div>
-        </div>
-    </div>
+    <main class="main" id="dashboard">
+      <div class="topbar"><span class="dot"></span><span id="currentClock">Memuat waktu</span></div>
 
-    <h2 class="section-title">Daftar Reservasi</h2>
-    <div id="bookingList">
-        <div class="loading-msg">Memuat data…</div>
-    </div>
+      <section class="hero">
+        <div>
+          <h1>Selamat datang kembali, Kasir!</h1>
+          <p>Kelola booking dengan mudah dan cepat.</p>
+        </div>
+        <div class="date-box">
+          <div class="date-label"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 9h16"/></svg>Tanggal</div>
+          <div class="date-row"><input type="date" id="viewDate"><button id="btnToday">Hari ini</button></div>
+        </div>
+      </section>
+
+      <section class="summary">
+        <div class="summary-card"><div class="summary-icon total"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 9h16"/></svg></div><div><div class="summary-label">Total Booking Hari Ini</div><div class="summary-num" id="sumBookings">0</div><div class="summary-sub">Semua status</div></div></div>
+        <div class="summary-card"><div class="summary-icon pending"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/><path d="m8 9 2 2 5-5M8 15h8"/></svg></div><div><div class="summary-label">Menunggu</div><div class="summary-num" id="sumPending">0</div><div class="summary-sub">Belum diproses</div></div></div>
+        <div class="summary-card"><div class="summary-icon active"><svg viewBox="0 0 24 24"><path d="M7 8h8a4 4 0 0 1 0 8H9a4 4 0 0 1-4-4V8z"/><path d="M15 10h2a2 2 0 0 1 0 4h-2M8 19h8"/></svg></div><div><div class="summary-label">Meja Terpakai</div><div class="summary-num" id="sumBooked">0</div><div class="summary-sub">Dari 15 meja</div></div></div>
+        <div class="summary-card"><div class="summary-icon done"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg></div><div><div class="summary-label">Meja Tersedia</div><div class="summary-num" id="sumAvail">15</div><div class="summary-sub">Siap digunakan</div></div></div>
+      </section>
+
+      <section class="content-grid" id="today">
+        <div class="panel">
+          <div class="panel-head"><div style="display:flex;align-items:center;gap:10px"><div class="panel-title">Booking Hari Ini</div><div class="panel-count" id="bookingCount">0 Booking</div></div><button class="panel-action" onclick="loadBookings(currentDate)">Refresh Data</button></div>
+          <div id="bookingList"><div class="loading-msg">Memuat data...</div></div>
+        </div>
+        <div class="panel latest-panel" id="all">
+          <div class="panel-head"><div class="panel-title">Booking Terbaru</div><button class="panel-action" onclick="loadBookings(currentDate)">Lihat Semua</button></div>
+          <div id="latestList" class="latest-list"><div class="latest-empty">Memuat data...</div></div>
+        </div>
+      </section>
+
+      <section class="panel info-panel" id="stats">
+        <div class="info-title">Informasi</div>
+        <div class="info-grid">
+          <div class="info-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></svg><div><span>Jam Operasional</span><strong>10.00 - 22.00</strong><span>Setiap Hari</span></div></div>
+          <div class="info-item"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0M16 11a3 3 0 0 1 2.7 4.3M16 20h5a4.5 4.5 0 0 0-3.7-4.4"/></svg><div><span>Kapasitas Tempat</span><strong>40 Orang</strong><span>Total Kapasitas</span></div></div>
+          <div class="info-item"><svg viewBox="0 0 24 24"><path d="M5 8h14v8H5zM8 16v3M16 16v3M3 19h18"/></svg><div><span>Total Meja</span><strong>15 Meja</strong><span>Indoor & Outdoor</span></div></div>
+          <div class="info-item"><svg viewBox="0 0 24 24"><path d="M5 9a10 10 0 0 1 14 0M8 12a6 6 0 0 1 8 0M11 15a2 2 0 0 1 2 0"/><circle cx="12" cy="18" r="1" fill="currentColor"/></svg><div><span>Wi-Fi</span><strong>Tersedia</strong><span>Gratis untuk pelanggan</span></div></div>
+        </div>
+      </section>
+      <div class="footer">© 2026 Gambare House. All rights reserved.</div>
+    </main>
+  </div>
 </div>
 
 <script>
 const TOTAL_TABLES = 15;
 let pollTimer = null;
-
-/* ════════════════════════════════════════════════
-   PIN GATE
-═══════════════════════════════════════════════════ */
-const pinGate  = document.getElementById('pinGate');
-const pinInput = document.getElementById('pinInput');
-const pinError = document.getElementById('pinError');
-
-function tryUnlock() {
-    if (pinInput.value === KASIR_PIN) {
-        pinGate.style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        sessionStorage.setItem('kasir_unlocked', '1');
-        initDashboard();
-    } else {
-        pinError.textContent = 'PIN salah, coba lagi.';
-        pinInput.value = '';
-        pinInput.focus();
-    }
-}
-document.getElementById('pinSubmit').addEventListener('click', tryUnlock);
-pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
-
-if (sessionStorage.getItem('kasir_unlocked') === '1') {
-    pinGate.style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    initDashboard();
-}
-
-/* ════════════════════════════════════════════════
-   DASHBOARD
-═══════════════════════════════════════════════════ */
 let currentDate = null;
-
-function initDashboard() {
-    const viewDate  = document.getElementById('viewDate');
-    const today     = new Date().toISOString().split('T')[0];
-    viewDate.value  = today;
-
-    document.getElementById('btnToday').addEventListener('click', () => {
-        viewDate.value = new Date().toISOString().split('T')[0];
-        loadBookings(viewDate.value);
-    });
-    viewDate.addEventListener('change', () => loadBookings(viewDate.value));
-
-    loadBookings(today);
-    if (pollTimer) clearInterval(pollTimer);
-    pollTimer = setInterval(() => loadBookings(currentDate), 5000);
-}
-
-async function loadBookings(dateStr) {
-    currentDate = dateStr;
-    try {
-        const res = await fetch('/api/get-bookings?date=' + encodeURIComponent(dateStr) + '&key=' + encodeURIComponent(API_KEY));
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message || 'Gagal memuat data');
-
-        renderBookings(data.bookings);
-        renderSummary(data.bookings);
-    } catch (err) {
-        console.error(err);
-        document.getElementById('bookingList').innerHTML =
-            '<div class="empty-state">Gagal memuat data: ' + err.message + '<br>Pastikan file di folder /api sudah ter-upload & API_KEY di config.js cocok dengan api/_helpers.php</div>';
-    }
-}
-
-function renderSummary(bookings) {
-    const pending = bookings.filter(b => b.status === 'pending');
-    const booked  = pending.reduce((sum, b) => sum + (Number(b.tables) || 0), 0);
-    const avail   = Math.max(0, TOTAL_TABLES - booked);
-
-    document.getElementById('sumTotal').textContent    = TOTAL_TABLES;
-    document.getElementById('sumBooked').textContent   = booked;
-    document.getElementById('sumAvail').textContent    = avail;
-    document.getElementById('sumBookings').textContent = bookings.length;
-}
-
-function renderBookings(bookings) {
-    const list = document.getElementById('bookingList');
-    if (bookings.length === 0) {
-        list.innerHTML = '<div class="empty-state">Belum ada reservasi untuk tanggal ini.</div>';
-        return;
-    }
-
-    list.innerHTML = bookings.map(b => {
-        const isPending = b.status === 'pending';
-        const waHref = 'https://wa.me/' + (b.phone || '').replace(/\D/g, '');
-        return `
-        <div class="booking-card ${isPending ? 'pending' : 'selesai'}">
-            <div class="b-main">
-                <div class="b-name">${escapeHtml(b.name || '-')}
-                    <span class="b-badge ${isPending ? 'pending' : 'selesai'}">${isPending ? 'Pending' : 'Selesai'}</span>
-                </div>
-                <div class="b-detail">
-                    <strong>${b.time || '-'}</strong> WIB &nbsp;|&nbsp;
-                    <strong>${b.tables || 0}</strong> meja &nbsp;|&nbsp;
-                    <strong>${b.guests || '-'}</strong> tamu
-                </div>
-                <div class="b-detail">${escapeHtml(b.floor || '-')}</div>
-                <div class="b-detail">${escapeHtml(b.phone || '-')}
-                    &nbsp; <a class="wa-link" href="${waHref}" target="_blank" rel="noopener">Chat WA →</a>
-                </div>
-                ${b.notes ? `<div class="b-notes">${escapeHtml(b.notes)}</div>` : ''}
-            </div>
-            <div class="b-actions">
-                ${isPending
-                    ? `<button class="btn-checkout" data-id="${b.id}" onclick="checkoutBooking('${b.id}', this)">Tandai Selesai</button>`
-                    : `<span style="font-size:.78rem;color:var(--brown-warm)">Sudah checkout</span>`
-                }
-            </div>
-        </div>`;
-    }).join('');
-}
-
-function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-}
-
-async function checkoutBooking(id, btnEl) {
-    if (!confirm('Selesaikan reservasi ini? Data booking akan dihapus dan meja otomatis kembali tersedia.')) return;
-    btnEl.disabled = true;
-    btnEl.textContent = 'Menghapus…';
-    try {
-        const res = await fetch('/api/checkout-booking', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id, key: API_KEY })
-        });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message || 'Gagal update status');
-        loadBookings(currentDate);
-    } catch (err) {
-        alert('Gagal update status: ' + err.message);
-        btnEl.disabled = false;
-        btnEl.textContent = 'Tandai Selesai';
-    }
-}
+const pinGate=document.getElementById('pinGate'),pinInput=document.getElementById('pinInput'),pinError=document.getElementById('pinError');
+function tryUnlock(){if(pinInput.value===KASIR_PIN){pinGate.style.display='none';document.getElementById('app').style.display='block';sessionStorage.setItem('kasir_unlocked','1');initDashboard()}else{pinError.textContent='PIN salah, coba lagi.';pinInput.value='';pinInput.focus()}}
+document.getElementById('pinSubmit').addEventListener('click',tryUnlock);pinInput.addEventListener('keydown',e=>{if(e.key==='Enter')tryUnlock()});
+function logoutKasir(){sessionStorage.removeItem('kasir_unlocked');location.reload()}
+function updateClock(){const now=new Date();document.getElementById('currentClock').textContent=now.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})+'  |  '+now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}
+function initDashboard(){const viewDate=document.getElementById('viewDate');const today=new Date().toISOString().split('T')[0];viewDate.value=today;document.getElementById('btnToday').addEventListener('click',()=>{viewDate.value=new Date().toISOString().split('T')[0];loadBookings(viewDate.value)});viewDate.addEventListener('change',()=>loadBookings(viewDate.value));loadBookings(today);updateClock();setInterval(updateClock,1000);if(pollTimer)clearInterval(pollTimer);pollTimer=setInterval(()=>{if(currentDate)loadBookings(currentDate)},5000)}
+async function loadBookings(dateStr){if(!dateStr)return;currentDate=dateStr;try{const res=await fetch('/api/get-bookings?date='+encodeURIComponent(dateStr)+'&key='+encodeURIComponent(API_KEY));if(!res.ok)throw new Error('HTTP '+res.status);const data=await res.json();if(!data.success)throw new Error(data.message||'Gagal memuat data');renderBookings(data.bookings||[]);renderSummary(data.bookings||[]);renderLatest(data.bookings||[])}catch(err){console.error(err);document.getElementById('bookingList').innerHTML='<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M12 8v4M12 16h.01"/><circle cx="12" cy="12" r="8.5"/></svg></div><strong>Gagal memuat data</strong>'+escapeHtml(err.message)+'<button class="refresh-inline" onclick="loadBookings(currentDate)">Coba lagi</button></div>';document.getElementById('latestList').innerHTML='<div class="latest-empty">Data belum dapat dimuat.</div>'}}
+function renderSummary(bookings){const pending=bookings.filter(b=>b.status==='pending');const booked=pending.reduce((sum,b)=>sum+(Number(b.tables)||0),0);const avail=Math.max(0,TOTAL_TABLES-booked);document.getElementById('sumBookings').textContent=bookings.length;document.getElementById('sumPending').textContent=pending.length;document.getElementById('sumBooked').textContent=booked;document.getElementById('sumAvail').textContent=avail;document.getElementById('bookingCount').textContent=bookings.length+' Booking'}
+function renderBookings(bookings){const list=document.getElementById('bookingList');if(bookings.length===0){list.innerHTML='<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M8 3v4M16 3v4M5 9h14"/></svg></div><strong>Tidak ada booking untuk tanggal ini</strong><span>Semua booking akan muncul di sini.</span><button class="refresh-inline" onclick="loadBookings(currentDate)">Refresh Data</button></div>';return}list.innerHTML=bookings.map(b=>{const isPending=b.status==='pending';const waHref='https://wa.me/'+(b.phone||'').replace(/\D/g,'');return `<div class="booking-card ${isPending?'pending':'selesai'}"><div><div class="b-name">${escapeHtml(b.name||'-')}<span class="b-badge ${isPending?'pending':'selesai'}">${isPending?'Menunggu':'Selesai'}</span></div><div class="b-detail"><strong>${escapeHtml(b.time||'-')}</strong> WIB &nbsp;·&nbsp; <strong>${b.tables||0}</strong> meja &nbsp;·&nbsp; <strong>${b.guests||'-'}</strong> tamu</div><div class="b-detail">${escapeHtml(b.floor||'-')} &nbsp;·&nbsp; ${escapeHtml(b.phone||'-')} ${b.phone?`<a class="wa-link" href="${waHref}" target="_blank" rel="noopener">Chat WA</a>`:''}</div>${b.notes?`<div class="b-notes">Catatan: ${escapeHtml(b.notes)}</div>`:''}</div><div class="b-actions">${isPending?`<button class="btn-checkout" data-id="${escapeHtml(String(b.id))}" onclick="checkoutBooking('${escapeHtml(String(b.id))}',this)">Tandai Selesai</button>`:`<span style="font-size:10px;color:var(--muted)">Sudah selesai</span>`}</div></div>`}).join('')}
+function renderLatest(bookings){const box=document.getElementById('latestList');if(!bookings.length){box.innerHTML='<div class="latest-empty"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><div>Belum ada booking</div><span>Booking terbaru akan muncul di sini.</span></div>';return}box.innerHTML=bookings.slice(0,5).map(b=>`<div class="latest-item"><div class="latest-top"><span>${escapeHtml(b.name||'-')}</span><span class="latest-status">${b.status==='pending'?'Menunggu':'Selesai'}</span></div><div class="latest-meta">${escapeHtml(b.time||'-')} WIB · ${b.tables||0} meja · ${b.guests||'-'} tamu<br>${escapeHtml(b.floor||'-')}</div></div>`).join('')}
+function escapeHtml(str){const div=document.createElement('div');div.textContent=str;return div.innerHTML}
+async function checkoutBooking(id,btnEl){if(!confirm('Selesaikan reservasi ini? Data booking akan dihapus dan meja otomatis kembali tersedia.'))return;btnEl.disabled=true;btnEl.textContent='Memproses...';try{const res=await fetch('/api/checkout-booking',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,key:API_KEY})});const data=await res.json();if(!data.success)throw new Error(data.message||'Gagal update status');loadBookings(currentDate)}catch(err){alert('Gagal update status: '+err.message);btnEl.disabled=false;btnEl.textContent='Tandai Selesai'}}
+if(sessionStorage.getItem('kasir_unlocked')==='1'){pinGate.style.display='none';document.getElementById('app').style.display='block';initDashboard()}
 </script>
 </body>
 </html>
