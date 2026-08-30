@@ -29,6 +29,7 @@ export async function supabaseRest(path, options = {}) {
   assertConfigured();
   const headers = new Headers(options.headers || {});
   headers.set('apikey', SUPABASE_SECRET_KEY);
+  headers.set('Authorization', `Bearer ${SUPABASE_SECRET_KEY}`);
   if (!headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
 
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
