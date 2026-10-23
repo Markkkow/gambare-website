@@ -53,3 +53,8 @@ Jika benar, hasilnya:
 
 ## Perilaku checkout
 Saat kasir menekan `Tandai Selesai`, endpoint `checkout-booking` menjalankan DELETE di Supabase. Booking hilang dari dashboard dan meja langsung kembali tersedia.
+
+## Stok Kitchen (kasir.html → menu "Stok Kitchen")
+Jalankan ulang `supabase.sql` di SQL Editor (aman dijalankan berkali-kali) untuk membuat tabel `stock_items`, `stock_movements`, dan view `stock_levels`.
+Endpoint baru: `api/stock-items.js` (daftar & tambah/hapus barang) dan `api/stock-movements.js` (catat masuk/keluar & laporan per periode, tanggal dihitung WIB).
+`supabase.sql` juga mengisi 49 barang dari `10_2026_KITCHEN_SO_GAMBARE.xlsx` (Kode Barang → supplier, Kebutuhan, Ket. Kebutuhan, Merk). Stok awal semua 0 — isi lewat "Barang Masuk".

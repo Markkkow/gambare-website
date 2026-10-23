@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gambare House | Cafe & Beverages</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@300;400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
     <script src="config.js"></script>
     <style>
         :root {
@@ -441,11 +441,40 @@
             .ramen-progress-title strong{font-size:.82rem}.ramen-progress-info p{font-size:.7rem}
         }
 
+        /* ─── CHEF COOKING RAMEN ─── */
+        .ramen-visual { width:150px; height:104px; flex:0 0 150px; }
+        .chef-scene { width:100%; height:100%; overflow:visible; }
+        .chef-body { transform-box:fill-box; transform-origin:50% 100%; animation:chefIdle 2.4s ease-in-out infinite; }
+        .chef-arm { transform-box:fill-box; transform-origin:8% 15%; transition:transform .3s; }
+        .chef-scene.cooking .chef-arm { animation:chefToss .55s ease-in-out 2; }
+        .chef-scene.cooking .chef-body { animation:chefHop .55s ease-in-out 2; }
+        .chef-scene.done .chef-arm { transform:rotate(-55deg); }
+        .chef-mouth-done { opacity:0; }
+        .chef-scene.done .chef-mouth-done { opacity:1; }
+        .chef-scene.done .chef-mouth { opacity:0; }
+        .ing { opacity:0; transform-box:fill-box; transform-origin:50% 100%; transform:translateY(-26px) scale(.6);
+               transition:opacity .35s ease, transform .5s cubic-bezier(.34,1.56,.64,1); }
+        .ing.on { opacity:1; transform:none; }
+        .steam path { opacity:0; }
+        .chef-scene.done .steam path { animation:steam 2.2s ease-in-out infinite; }
+        .chef-scene.done .steam path:nth-child(2) { animation-delay:.7s; }
+        .chef-scene.done .steam path:nth-child(3) { animation-delay:1.4s; }
+        .sparkle { opacity:0; transform-box:fill-box; transform-origin:center; }
+        .chef-scene.done .sparkle { animation:sparkle 1.2s ease-out 1 both; }
+        @keyframes chefIdle { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-1.5px)} }
+        @keyframes chefHop  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+        @keyframes chefToss { 0%,100%{transform:rotate(0)} 40%{transform:rotate(-38deg)} 70%{transform:rotate(12deg)} }
+        @keyframes steam { 0%{opacity:0;transform:translateY(6px)} 40%{opacity:.7} 100%{opacity:0;transform:translateY(-12px)} }
+        @keyframes sparkle { 0%{opacity:0;transform:scale(.3)} 40%{opacity:1;transform:scale(1.15)} 100%{opacity:0;transform:scale(1)} }
+        @media(max-width:480px){ .ramen-visual{ width:120px; flex-basis:120px; height:84px; transform:none; margin-right:0; } }
+        @media (prefers-reduced-motion: reduce) { .chef-body, .chef-arm { animation:none !important; } }
+
         /* ─── RESPONSIVE ─── */
 
         /* TABLET (≤1024px) — iPad, tablet Android, laptop kecil */
         @media(max-width:1024px){
             .booking-wrap{ grid-template-columns:1fr; gap:2.5rem; }
+            .booking-wrap .b-info{ order:2; } /* form pesan meja dulu, info kunjungan di bawahnya */
             .hero{ padding:7rem 1.5rem 4rem; }
             .section{ padding:4.5rem 5%; }
             .pdf-viewer{ height:560px; }
@@ -566,6 +595,80 @@
         @media(max-width:900px) and (max-height:480px) and (orientation:landscape){
             .hero{ min-height:auto; padding:6rem 1.5rem 2.5rem; }
         }
+
+        /* ─── UI/UX POLISH ─── */
+        :focus-visible { outline: 3px solid rgba(191,85,0,.55); outline-offset: 2px; border-radius: 4px; }
+        input:focus-visible, textarea:focus-visible, select:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(191,85,0,.14); }
+        ::selection { background: rgba(191,85,0,.2); }
+        .btn { border-radius: 10px; padding: .95rem 2rem; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; }
+        .btn:active, .pdf-download:active { transform: translateY(0) scale(.98); }
+        .pdf-download { border-radius: 10px; }
+        .btn-dark { box-shadow: 0 4px 14px rgba(46,28,21,.18); }
+        .hero h1 { text-wrap: balance; letter-spacing: -.01em; text-shadow: 0 1px 0 rgba(255,255,255,.4); }
+        .hero p { font-size: 1.15rem; letter-spacing: .04em; }
+        .hero-badge { backdrop-filter: blur(6px); background: rgba(255,255,255,.7); }
+        .table-banner { border-radius: 20px; border: 1px solid rgba(141,110,99,.15); backdrop-filter: blur(10px); background: rgba(255,255,255,.92); }
+        .indicator { box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+        .nav-links a { padding: .5rem 0; }
+        .nav-links a.active { color: var(--accent); }
+        .nav-links a.active::after { width: 100%; }
+        .section-title::after { content:''; display:block; width:48px; height:3px; border-radius:2px; background:var(--accent); margin:.8rem auto 0; }
+        .subtitle { max-width: 520px; }
+        .pdf-viewer { border: 1px solid rgba(141,110,99,.15); border-radius: 16px; }
+        .form-box { border-radius: 20px; padding: 2.5rem; border: 1px solid rgba(141,110,99,.1); box-shadow: 0 12px 40px rgba(46,28,21,.08); }
+        input, textarea, select { border-radius: 10px; padding: .85rem 1rem; font-size: 1rem; min-height: 48px; background: var(--cream); }
+        input:hover, textarea:hover, select:hover { border-color: rgba(141,110,99,.4); }
+        .floor-btn { border-radius: 10px; min-height: 48px; }
+        .stepper-btn { width: 48px; height: 48px; border-radius: 10px; font-size: 1.3rem; }
+        .info-ico { border-radius: 10px; background: var(--accent); }
+        .info-text span { font-size: .88rem; line-height: 1.6; }
+        .table-counter-box { border-radius: 14px; background: var(--white); }
+        .modal-box { border-radius: 20px; }
+        .modal-overlay { backdrop-filter: blur(4px); }
+        #toast { border-radius: 12px; }
+        .f-links a { padding: .4rem 0; }
+        @media (hover: none) {
+            .btn-dark:hover, .btn-outline:hover, .btn-wa:hover, .pdf-download:hover { transform: none; }
+        }
+        @media (max-width: 768px) {
+            .form-box { padding: 1.5rem; border-radius: 16px; }
+            .hero h1 { font-size: clamp(2.2rem, 9vw, 3rem); }
+            input, textarea, select { font-size: 16px; } /* cegah zoom otomatis di iOS */
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+            .reveal { opacity: 1; transform: none; }
+            #clouds { display: none; }
+        }
+        #sideCounterBox { max-width: 1000px; margin: -1.5rem auto 2rem; text-align: left; }
+        /* ─── PIXEL ACCENTS (ringan) ─── */
+        :root { --ink: #2e1c15; --pixel: 'Press Start 2P', monospace; }
+        .eyebrow, .hero-badge, .ramen-progress-percent, .floor-badge, .indicator { font-family: var(--pixel); letter-spacing: 0; }
+        .eyebrow { font-size: .58rem; background: var(--ink); color: #ffd54a; padding: .5rem .75rem; border-radius: 0; }
+        .hero-badge { font-size: .58rem; padding: .65rem 1rem; border-radius: 0; background: #ffd54a; color: var(--ink);
+            border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); line-height: 1.6; }
+        .section-title::after { height: 4px; width: 64px; border-radius: 0; background: repeating-linear-gradient(90deg, var(--accent) 0 8px, transparent 8px 12px); }
+        /* tombol ala arcade: bayangan keras, ditekan turun */
+        .btn, .pdf-download { border-radius: 6px; border: 3px solid var(--ink); box-shadow: 0 5px 0 var(--ink); }
+        .btn-dark:hover, .btn-outline:hover, .btn-wa:hover, .pdf-download:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--ink); }
+        .btn:active, .pdf-download:active { transform: translateY(5px) !important; box-shadow: 0 0 0 var(--ink) !important; }
+        .btn-dark:disabled { box-shadow: 0 5px 0 var(--brown-warm); border-color: var(--brown-warm); }
+        /* kartu: border tegas + bayangan offset */
+        .form-box, .table-banner, .pdf-viewer, .modal-box { border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); border-radius: 12px; }
+        .ramen-progress-card { border: 3px solid var(--ink); border-radius: 10px; background: #fff3d6; box-shadow: 4px 4px 0 var(--ink); }
+        .info-ico { border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); border-radius: 6px; }
+        /* progress bar bersegmen */
+        .table-progress-bar, .ramen-progress-track { height: 12px; border: 2px solid var(--ink); border-radius: 3px; background: #fff; }
+        .table-progress-fill, .ramen-progress-fill { border-radius: 0; background-image: repeating-linear-gradient(90deg, transparent 0 8px, rgba(255,255,255,.45) 8px 10px); }
+        .ramen-progress-percent { font-size: .55rem; color: var(--accent); }
+        .indicator { border-radius: 0; border-color: var(--ink); }
+        .indicator.active { border-radius: 0; }
+        .floor-badge { font-size: .45rem; border-radius: 0; padding: .3rem .4rem; }
+        @media (max-width: 768px) {
+            .form-box, .table-banner, .pdf-viewer, .modal-box { box-shadow: 4px 4px 0 var(--ink); }
+        }
+
     </style>
 </head>
 <body>
@@ -585,8 +688,8 @@
 </div>
 
 <!-- ── TOAST ── -->
-<div id="toast">
-    <div class="toast-check" id="toastCheck">✓</div>
+<div id="toast" role="status" aria-live="polite">
+    <div class="toast-check" id="toastCheck" aria-hidden="true">✓</div>
     <span id="toastMsg"></span>
 </div>
 
@@ -676,7 +779,7 @@
     <!-- TABLE AVAILABILITY IN HERO -->
     <div class="table-banner" id="heroBanner">
         <div class="table-status-item">
-            <div class="table-big-num available" id="heroAvailNum">15</div>
+            <div class="table-big-num available" id="heroAvailNum">10</div>
             <div class="table-label">Meja Tersedia</div>
         </div>
         <div class="table-divider"></div>
@@ -700,11 +803,12 @@
 
 <!-- ── MENU ── -->
 <section id="menu" class="section">
+    <span class="eyebrow">Menu Kami</span>
     <h2 class="section-title reveal">Daftar Menu</h2>
     <p class="subtitle reveal">Lihat seluruh menu kami dengan detail lengkap dalam format PDF di bawah, swipe untuk menggeser menu.</p>
     <div class="menu-pdf-container">
         <div class="pdf-viewer reveal">
-            <iframe allowfullscreen="allowfullscreen" allow="autoplay; fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5fd5605060.html" style="border: 1px solid lightgray; width: 100%; height: 400px;"></iframe>
+            <iframe title="Menu Gambare House" loading="lazy" allowfullscreen="allowfullscreen" allow="autoplay; fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5fd5605060.html" style="border: 1px solid lightgray; width: 100%; height: 400px;"></iframe>
         </div>
         <div style="text-align: center;">
             <a href="files/menu-gambare-house.pdf" class="pdf-download" download>Download Menu PDF</a>
@@ -717,6 +821,18 @@
     <span class="eyebrow">Reservasi</span>
     <h2 class="section-title reveal">Pesan Meja</h2>
     <p class="subtitle reveal">Konfirmasi akan langsung dikirim melalui WhatsApp kami.</p>
+
+    <!-- Live table counter, di atas form booking -->
+    <div class="table-counter-box" id="sideCounterBox">
+        <div class="tcb-left">
+            <span class="tcb-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h18"/><path d="M5 8v11"/><path d="M19 8v11"/><path d="M3 8l1.5-4h15L21 8"/></svg></span>
+            <div>
+                <div class="tcb-label">Meja Tersedia Hari Ini</div>
+                <div class="tcb-sub" id="sideCounterSub">Pilih jumlah meja di form di bawah</div>
+            </div>
+        </div>
+        <div class="tcb-count ok" id="sideCounterNum">10</div>
+    </div>
 
     <div class="booking-wrap">
         <div class="b-info reveal">
@@ -751,17 +867,6 @@
                 </div>
             </div>
 
-            <!-- Live table counter di sidebar -->
-            <div class="table-counter-box" id="sideCounterBox">
-                <div class="tcb-left">
-                    <span class="tcb-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h18"/><path d="M5 8v11"/><path d="M19 8v11"/><path d="M3 8l1.5-4h15L21 8"/></svg></span>
-                    <div>
-                        <div class="tcb-label">Meja Tersedia Hari Ini</div>
-                        <div class="tcb-sub" id="sideCounterSub">Pilih jumlah meja di form →</div>
-                    </div>
-                </div>
-                <div class="tcb-count ok" id="sideCounterNum">15</div>
-            </div>
         </div>
 
         <div class="form-box reveal">
@@ -771,19 +876,73 @@
             <form id="bookingForm">
                 <div class="ramen-progress-card" id="ramenProgressCard" aria-live="polite">
                     <div class="ramen-visual" aria-hidden="true">
-                        <div class="ramen-bowl"><div class="ramen-broth" id="ramenBroth"></div></div>
-                        <div class="ramen-rim"></div>
-                        <div class="ramen-noodles"></div>
-                        <div class="ramen-egg" id="ramenEgg"></div>
+                        <svg class="chef-scene" id="chefScene" viewBox="0 0 160 110">
+                            <!-- counter -->
+                            <rect x="0" y="98" width="160" height="6" rx="3" fill="#d9c6b3"/>
+                            <!-- CHEF -->
+                            <g class="chef-body">
+                                <!-- coat -->
+                                <path d="M14 98 q0-30 22-32 q22 2 22 32z" fill="#fff" stroke="#6f625a" stroke-width="2"/>
+                                <path d="M36 68v28" stroke="#e1d6cb" stroke-width="2"/>
+                                <circle cx="31" cy="78" r="1.6" fill="#6f625a"/><circle cx="31" cy="88" r="1.6" fill="#6f625a"/>
+                                <!-- scarf -->
+                                <path d="M28 66 l8 7 l8-7" fill="#bf5500"/>
+                                <!-- head -->
+                                <circle cx="36" cy="54" r="13" fill="#f3c9a0" stroke="#6f625a" stroke-width="2"/>
+                                <circle cx="31" cy="54" r="1.6" fill="#3e2723"/><circle cx="41" cy="54" r="1.6" fill="#3e2723"/>
+                                <circle cx="28" cy="58.5" r="2" fill="#f19a83" opacity=".6"/><circle cx="44" cy="58.5" r="2" fill="#f19a83" opacity=".6"/>
+                                <path class="chef-mouth" d="M33 59.5 q3 2 6 0" fill="none" stroke="#3e2723" stroke-width="1.5" stroke-linecap="round"/>
+                                <path class="chef-mouth-done" d="M32 58.5 q4 5 8 0z" fill="#3e2723"/>
+                                <!-- hat -->
+                                <rect x="26" y="36" width="20" height="7" rx="1.5" fill="#fff" stroke="#6f625a" stroke-width="2"/>
+                                <path d="M26 37 c-9 0-9-14 1-12 c0-9 18-9 18 0 c10-2 10 12 1 12z" fill="#fff" stroke="#6f625a" stroke-width="2"/>
+                                <!-- arm with ladle -->
+                                <g class="chef-arm">
+                                    <path d="M50 74 q12 2 18-6" fill="none" stroke="#6f625a" stroke-width="10" stroke-linecap="round"/>
+                                    <path d="M50 74 q12 2 18-6" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+                                    <circle cx="69" cy="67" r="3.5" fill="#f3c9a0" stroke="#6f625a" stroke-width="1.5"/>
+                                    <path d="M70 66 l12-14" stroke="#8d6e63" stroke-width="2.5" stroke-linecap="round"/>
+                                    <path d="M79 50 q6-2 8 3 q-4 4-9 1z" fill="#8d6e63"/>
+                                </g>
+                            </g>
+                            <!-- STEAM -->
+                            <g class="steam" fill="none" stroke="#bcaaa4" stroke-width="2" stroke-linecap="round">
+                                <path d="M108 52 q-4-5 0-10 q4-5 0-10"/>
+                                <path d="M120 50 q-4-5 0-10 q4-5 0-10"/>
+                                <path d="M132 52 q-4-5 0-10 q4-5 0-10"/>
+                            </g>
+                            <!-- BOWL -->
+                            <ellipse cx="120" cy="66" rx="34" ry="9" fill="#5d4037"/>
+                            <g class="ing" id="ingBroth"><ellipse cx="120" cy="66.5" rx="31" ry="7" fill="#d7a66a"/><ellipse cx="112" cy="65" rx="6" ry="1.5" fill="#e9c38e"/></g>
+                            <g class="ing" id="ingNoodles" fill="none" stroke="#f4d58d" stroke-width="2" stroke-linecap="round">
+                                <path d="M97 67 q4-4 8 0 t8 0 t8 0 t8 0"/><path d="M100 70 q4-4 8 0 t8 0 t8 0 t8 0"/>
+                            </g>
+                            <g class="ing" id="ingChashu">
+                                <circle cx="108" cy="64" r="5.5" fill="#c98b5e" stroke="#8a5434" stroke-width="1.5"/><circle cx="108" cy="64" r="2.2" fill="#e8c0a0"/>
+                            </g>
+                            <g class="ing" id="ingEgg">
+                                <ellipse cx="128" cy="64" rx="6" ry="4.5" fill="#fff8e6" stroke="#c99a5b" stroke-width="1.2"/><circle cx="128" cy="64" r="2.4" fill="#f0a830"/>
+                            </g>
+                            <g class="ing" id="ingNori"><rect x="134" y="52" width="9" height="15" rx="1" fill="#2f3b2a" transform="rotate(12 138 60)"/></g>
+                            <g class="ing" id="ingScallion" fill="#6abf4b">
+                                <circle cx="117" cy="62" r="1.4"/><circle cx="121" cy="66" r="1.4"/><circle cx="114" cy="68" r="1.4"/><circle cx="135" cy="68" r="1.4"/><circle cx="102" cy="68" r="1.4"/>
+                            </g>
+                            <path d="M86 66 q2 30 34 32 q32-2 34-32 a34 9 0 0 1 -68 0z" fill="#f7efe4" stroke="#6f625a" stroke-width="2.5"/>
+                            <path d="M96 82 h48" stroke="#bf5500" stroke-width="2.5" stroke-dasharray="5 4"/>
+                            <ellipse cx="120" cy="66" rx="34" ry="9" fill="none" stroke="#6f625a" stroke-width="2.5"/>
+                            <!-- sparkles -->
+                            <path class="sparkle" d="M150 40 l2 5 l5 2 l-5 2 l-2 5 l-2-5 l-5-2 l5-2z" fill="#f0a830"/>
+                            <path class="sparkle" d="M92 42 l1.5 4 l4 1.5 l-4 1.5 l-1.5 4 l-1.5-4 l-4-1.5 l4-1.5z" fill="#f0a830"/>
+                        </svg>
                     </div>
                     <div class="ramen-progress-info">
-                        <div class="ramen-progress-title"><strong id="ramenProgressTitle">Ramen kamu masih kosong</strong><span class="ramen-progress-percent" id="ramenProgressPercent">0%</span></div>
-                        <p id="ramenProgressText">Isi data booking sedikit demi sedikit, ramen akan ikut terisi.</p>
+                        <div class="ramen-progress-title"><strong id="ramenProgressTitle">Chef siap memasak</strong><span class="ramen-progress-percent" id="ramenProgressPercent">0%</span></div>
+                        <p id="ramenProgressText">Isi data booking, chef akan mulai meracik ramen kamu.</p>
                         <div class="ramen-progress-track" aria-label="Progress pengisian booking"><div class="ramen-progress-fill" id="ramenProgressFill"></div></div>
                     </div>
                 </div>
-                <div class="fg"><label for="name">Nama Lengkap</label><input type="text" id="bName" required placeholder="Masukkan nama kamu"></div>
-                <div class="fg"><label for="bPhone">Nomor WhatsApp</label><input type="tel" id="bPhone" required placeholder="Contoh: 081234567890"></div>
+                <div class="fg"><label for="bName">Nama Lengkap</label><input type="text" id="bName" required autocomplete="name" placeholder="Masukkan nama kamu"></div>
+                <div class="fg"><label for="bPhone">Nomor WhatsApp</label><input type="tel" id="bPhone" required autocomplete="tel" inputmode="tel" placeholder="Contoh: 081234567890"></div>
                 <div class="fg">
                     <label for="bDate">Tanggal Kunjungan</label>
                     <input type="date" id="bDate" required>
@@ -831,9 +990,9 @@
                 <div class="fg">
                     <label>Jumlah Meja yang Dipesan</label>
                     <div class="stepper-wrap">
-                        <button type="button" class="stepper-btn" id="stepDown">−</button>
+                        <button type="button" class="stepper-btn" id="stepDown" aria-label="Kurangi jumlah meja">−</button>
                         <input type="number" id="bTables" class="stepper-input" min="1" max="10" value="1" readonly>
-                        <button type="button" class="stepper-btn" id="stepUp">+</button>
+                        <button type="button" class="stepper-btn" id="stepUp" aria-label="Tambah jumlah meja">+</button>
                     </div>
                     <div style="font-size:.75rem; color:var(--brown-warm); margin-top:.35rem;" id="tableHint">
                         1 meja ≈ 2–4 orang
@@ -945,7 +1104,7 @@ function refreshTableUI() {
     if (heroAvail) {
         heroAvail.textContent = available;
         heroAvail.className = 'table-big-num ' +
-            (available > 10 ? 'available' : available > 3 ? 'warning' : 'danger');
+            (available > 6 ? 'available' : available > 3 ? 'warning' : 'danger');
     }
     if (heroBooked) heroBooked.textContent = booked;
     if (heroFill) {
@@ -959,7 +1118,7 @@ function refreshTableUI() {
     if (sideNum) {
         sideNum.textContent = available;
         sideNum.className = 'tcb-count ' +
-            (available > 10 ? 'ok' : available > 3 ? 'warn' : 'full');
+            (available > 6 ? 'ok' : available > 3 ? 'warn' : 'full');
     }
 
     // Update submit button
@@ -1411,28 +1570,48 @@ document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
 /* ════════════════════════════════════════════════
    BOOKING FORM — RAMEN PROGRESS
 ═══════════════════════════════════════════════════ */
+const RAMEN_STEPS = [
+    { field:'bName',   ing:'ingBroth',    title:'Kuah dituang',       text:'Chef menuang kaldu hangat ke mangkuk.' },
+    { field:'bPhone',  ing:'ingNoodles',  title:'Mie masuk mangkuk',  text:'Mie segar ditiriskan dan disusun rapi.' },
+    { field:'bDate',   ing:'ingChashu',   title:'Chashu ditata',      text:'Irisan chashu ditaruh di atas mie.' },
+    { field:'bTime',   ing:'ingEgg',      title:'Telur ajitama',      text:'Telur setengah matang ditambahkan.' },
+    { field:'bTables', ing:'ingNori',     title:'Ramen kamu sedang dimasak', text:'Chef sedang meracik ramen spesial untukmu.' },
+    { field:'bGuests', ing:'ingScallion', title:'Taburan daun bawang', text:'Hampir siap disajikan.' },
+];
+let ramenPrevDone = -1;
 function updateRamenProgress() {
-    const fields = ['bName','bPhone','bDate','bTime','bTables','bGuests']
-        .map(id => document.getElementById(id)).filter(Boolean);
-    const completed = fields.filter(el => String(el.value || '').trim() !== '').length;
-    const percent = Math.round((completed / fields.length) * 100);
+    const state = RAMEN_STEPS.map(st => {
+        const el = document.getElementById(st.field);
+        return !!el && String(el.value || '').trim() !== '';
+    });
+    const completed = state.filter(Boolean).length;
+    const percent = Math.round((completed / RAMEN_STEPS.length) * 100);
     const fill = document.getElementById('ramenProgressFill');
-    const broth = document.getElementById('ramenBroth');
-    const egg = document.getElementById('ramenEgg');
     const title = document.getElementById('ramenProgressTitle');
     const text = document.getElementById('ramenProgressText');
     const percentEl = document.getElementById('ramenProgressPercent');
     const card = document.getElementById('ramenProgressCard');
-    if (!fill) return;
+    const scene = document.getElementById('chefScene');
+    if (!fill || !scene) return;
+
+    RAMEN_STEPS.forEach((st, i) => document.getElementById(st.ing).classList.toggle('on', state[i]));
     fill.style.width = percent + '%';
     percentEl.textContent = percent + '%';
-    broth.style.height = Math.max(12, percent) + '%';
-    egg.style.opacity = Math.max(.15, percent / 100);
-    egg.style.transform = `translateY(${Math.max(0, 10 - percent / 10)}px)`;
-    if (percent === 0) { title.textContent='Ramen kamu masih kosong'; text.textContent='Isi data booking sedikit demi sedikit, ramen akan ikut terisi.'; }
-    else if (percent < 50) { title.textContent='Ramen mulai terisi'; text.textContent='Mantap, lanjutkan isi data booking kamu.'; }
-    else if (percent < 100) { title.textContent='Ramen hampir penuh'; text.textContent='Tinggal beberapa data lagi sebelum booking siap dikirim.'; }
-    else { title.textContent='Ramen sudah penuh!'; text.textContent='Semua data utama sudah lengkap. Booking kamu siap dikirim.'; if (!card.classList.contains('ramen-complete')) { card.classList.add('ramen-complete'); setTimeout(()=>card.classList.remove('ramen-complete'),700); } }
+
+    // Chef melempar bahan setiap ada field baru yang terisi
+    if (ramenPrevDone !== -1 && completed > ramenPrevDone) {
+        scene.classList.remove('cooking'); void scene.getBoundingClientRect(); scene.classList.add('cooking');
+        setTimeout(() => scene.classList.remove('cooking'), 1150);
+    }
+    ramenPrevDone = completed;
+    scene.classList.toggle('done', completed === RAMEN_STEPS.length);
+
+    if (completed === 0) { title.textContent='Chef siap memasak'; text.textContent='Isi data booking, chef akan mulai meracik ramen kamu.'; }
+    else if (completed < RAMEN_STEPS.length) {
+        const last = RAMEN_STEPS.filter((_, i) => state[i]).pop();
+        title.textContent = last.title; text.textContent = last.text;
+    }
+    else { title.textContent='Ramen siap disajikan!'; text.textContent='Itadakimasu! Semua data lengkap, booking siap dikirim.'; if (!card.classList.contains('ramen-complete')) { card.classList.add('ramen-complete'); setTimeout(()=>card.classList.remove('ramen-complete'),700); } }
 }
 ['bName','bPhone','bDate','bTime','bTables','bGuests'].forEach(id => { const el=document.getElementById(id); if(el){el.addEventListener('input',updateRamenProgress); el.addEventListener('change',updateRamenProgress);} });
 
@@ -1483,6 +1662,22 @@ startAvailabilityPolling(bDate ? bDate.value : bookingMinDate);
 refreshTableUI();
 updateStepperState();
 updateRamenProgress();
+/* Tandai link navbar sesuai section yang sedang dilihat */
+(function () {
+    const links = document.querySelectorAll('.nav-links a');
+    const map = {};
+    links.forEach(a => { const el = document.querySelector(a.getAttribute('href')); if (el) map[a.getAttribute('href')] = { a, el }; });
+    if (!('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (!e.isIntersecting) return;
+            links.forEach(l => l.classList.remove('active'));
+            const hit = map['#' + e.target.id];
+            if (hit) hit.a.classList.add('active');
+        });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    Object.values(map).forEach(m => io.observe(m.el));
+})();
 </script>
 </body>
 </html>
