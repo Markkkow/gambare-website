@@ -6,7 +6,7 @@
 <title>Kasir Dashboard | Gambare House</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="config.js"></script>
 <script src="kasir-config.js"></script>
 <style>
@@ -165,13 +165,113 @@ button{cursor:pointer}
 @media(max-width:1100px){.item-grid{grid-template-columns:1fr 1fr}.item-grid .span-2{grid-column:1/-1}}
 @media(max-width:720px){.stock-filters{width:100%}.stock-filters select{max-width:none;flex:1}.item-grid{grid-template-columns:1fr}.shop-list{padding:12px}}
 @media print{.report-tabs .tab:not(.active){display:none}.table-wrap.tall{max-height:none}}
+/* ════════ TEMA GAMBARE (sama dengan index.html) + aksen pixel ringan ════════ */
+:root{
+  --bg:#faf7f2;--surface:#fff;--surface-soft:#fdfaf5;--line:#eadfd4;
+  --text:#2e1c15;--muted:#8d6e63;--muted-2:#a8958b;--dark:#2e1c15;
+  --brown:#5d4037;--brown-soft:#f0e9e1;--green:#4f8a5b;--green-soft:#e5f1e4;
+  --blue:#6e88a1;--blue-soft:#e8eef3;--gray-soft:#efe8e0;--danger:#c0392b;
+  --accent:#bf5500;--accent-soft:#fbeadb;--yellow:#ffd54a;--ink:#2e1c15;
+  --pixel:'Press Start 2P',monospace;--serif:'Playfair Display',serif;
+  --shadow:none;
+}
+body{background:var(--bg)}
+.hero h1,.panel-title,.login-card h1,.info-title,.summary-num{font-family:var(--serif);letter-spacing:0}
+.hero h1{font-size:24px}.panel-title{font-size:18px}
+
+/* kartu: border tegas + bayangan offset */
+.hero,.panel,.summary-card,.login-card{border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);border-radius:12px}
+.hero{background:linear-gradient(120deg,#fff 55%,var(--accent-soft))}
+.summary-card{transition:transform .15s}.summary-card:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink)}
+.summary-icon{border:2px solid var(--ink);border-radius:8px}
+.summary-icon.total{background:var(--brown-soft);color:var(--brown)}
+.summary-icon.pending{background:var(--green-soft);color:var(--green)}
+.summary-icon.active{background:var(--accent-soft);color:var(--accent)}
+.summary-icon.done,.summary-icon.low{background:#fde8e4;color:var(--danger)}
+.summary-label{color:var(--muted);font-weight:500}
+.panel-head{border-bottom:2px solid var(--ink);background:var(--surface-soft)}
+.panel-count{font-family:var(--pixel);font-size:8px;background:var(--yellow);color:var(--ink);border:2px solid var(--ink);border-radius:0;padding:6px 8px}
+
+/* sidebar */
+.sidebar{background:#f5ede3;border-right:2px solid var(--ink)}
+.logo-wrap{padding:0 6px 22px;gap:12px;align-items:center}
+.logo-text{font-family:var(--serif);font-size:18px;letter-spacing:.04em}
+.logo-text small{font-family:var(--pixel);font-size:7px;letter-spacing:.15em;color:var(--accent);margin-top:6px}
+.nav-item{color:var(--brown);border:2px solid transparent}
+.nav-item:hover{background:#fff;box-shadow:none;border-color:var(--line)}
+.nav-item.active{background:var(--accent);color:#fff;border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.staff-card{border:2px solid var(--ink);border-radius:10px;background:#fff}
+.nav-divider{background:var(--ink);opacity:.15}
+
+/* karakter pixel kasir */
+.px-cashier{display:block;image-rendering:pixelated}
+.px-avatar{width:56px;height:62px;flex:none;background:var(--yellow);border:2px solid var(--ink);border-radius:8px;box-shadow:3px 3px 0 var(--ink);display:grid;place-items:center;overflow:hidden}
+.px-cashier.sm{width:40px;height:45px;margin-top:8px}
+.px-cashier.lg{width:96px;height:108px}
+.px-bob{animation:pxBob 1.2s steps(2) infinite}
+.px-lids{opacity:0;animation:pxBlink 4s steps(1) infinite}
+@keyframes pxBob{50%{transform:translateY(-.5px)}}
+@keyframes pxBlink{0%,92%,100%{opacity:0}94%,97%{opacity:1}}
+.px-bubble{display:inline-block;margin-top:7px;font-family:var(--pixel);font-size:6px;letter-spacing:0;color:var(--ink);background:#fff;border:2px solid var(--ink);padding:4px 5px;position:relative}
+.px-bubble::before{content:'';position:absolute;left:-6px;top:4px;border:3px solid transparent;border-right-color:var(--ink)}
+.login-sprite{width:120px;height:130px;margin:0 auto 18px;background:var(--yellow);border:3px solid var(--ink);border-radius:12px;box-shadow:5px 5px 0 var(--ink);display:grid;place-items:center}
+#pinGate{background:var(--bg) repeating-linear-gradient(45deg,transparent 0 14px,rgba(191,85,0,.04) 14px 28px)}
+
+/* tombol arcade */
+#pinSubmit,.btn-primary,.btn-checkout{border:2px solid var(--ink);border-radius:8px;box-shadow:0 4px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+#pinSubmit,.btn-primary{background:var(--accent)}
+#pinSubmit:hover,.btn-primary:hover{background:#d96300;transform:translateY(-1px);box-shadow:0 5px 0 var(--ink)}
+.btn-primary.in{background:var(--green)}.btn-primary.in:hover{background:#43794e}
+.btn-primary.out{background:var(--danger)}.btn-primary.out:hover{background:#a93226}
+.btn-checkout{background:var(--ink)}
+#pinSubmit:active,.btn-primary:active,.btn-checkout:active{transform:translateY(4px);box-shadow:0 0 0 var(--ink)}
+.panel-action,.refresh-inline,#btnToday{border:2px solid var(--ink);border-radius:8px;background:#fff;color:var(--ink);font-weight:600;box-shadow:0 2px 0 var(--ink)}
+.panel-action:hover,.refresh-inline:hover{background:var(--yellow)}
+#btnToday{padding:4px 8px;font-size:11px}
+
+/* input */
+#pinInput,.stock-form input,.stock-form select,.search,.report-filters input,.report-filters select,.stock-filters select{border:2px solid var(--line);background:#fff}
+#pinInput:focus,.stock-form input:focus,.stock-form select:focus,.search:focus,.report-filters input:focus,.report-filters select:focus,.stock-filters select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(191,85,0,.15)}
+.date-box{border:2px solid var(--ink);border-radius:10px}
+:focus-visible{outline:3px solid rgba(191,85,0,.5);outline-offset:2px}
+
+/* booking & tabel */
+.booking-card{border:2px solid var(--line);border-radius:10px}
+.booking-card.pending{border-left:6px solid var(--accent)}
+.booking-card.selesai{border-left:6px solid var(--green)}
+.booking-card:hover{border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.b-badge.pending,.latest-status{background:var(--accent-soft);color:var(--accent)}
+.wa-link{color:var(--green)}
+.stock-table th{background:var(--brown-soft);color:var(--brown);border-bottom:2px solid var(--ink)}
+.stock-table tbody tr:hover td{background:#fffaf2}
+.pill{border-radius:4px;border:1.5px solid currentColor}
+.pill.low{background:#fff3d6;color:#9a6a1d}
+.type-toggle,.report-tabs{background:var(--brown-soft);border:2px solid var(--ink);border-radius:10px}
+.type-btn.in.active,.type-btn.out.active,.tab.active{box-shadow:0 2px 0 var(--ink);border:2px solid var(--ink)}
+.type-btn,.tab{border:2px solid transparent}
+.tab.active{color:var(--accent)}
+.mv-stock{border:2px dashed var(--line);background:var(--surface-soft)}
+.shop-group{border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);background:#fff}
+.icon-btn:hover{color:var(--accent);background:var(--accent-soft)}
+.topbar .dot{background:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+.empty-icon{background:var(--brown-soft);border:2px solid var(--ink)}
+
+@media(max-width:720px){
+  .sidebar{border-right:0;border-bottom:2px solid var(--ink)}
+  .logo-wrap{padding:0 4px 10px}
+  .px-avatar{width:44px;height:48px}.px-cashier.sm{width:32px;height:36px;margin-top:6px}
+  .hero,.panel,.summary-card{box-shadow:3px 3px 0 var(--ink)}
+  .hero h1{font-size:20px}
+}
+@media(prefers-reduced-motion:reduce){.px-bob,.px-lids{animation:none}}
+@media print{.hero,.panel,.summary-card{box-shadow:none}}
 </style>
 </head>
 <body>
 
 <div id="pinGate">
   <div class="login-card">
-    <img class="login-logo" src="images/logo/Untitled_Artwork-1.png" alt="Gambare House">
+    <div class="login-sprite"><svg class="px-cashier lg" viewBox="0 0 16 18" shape-rendering="crispEdges" role="img" aria-label="Karakter kasir Gambare House"><g class="px-bob"><rect x="4" y="0" width="8" height="1" fill="#2e1c15"/><rect x="3" y="1" width="1" height="1" fill="#2e1c15"/><rect x="4" y="1" width="8" height="1" fill="#bf5500"/><rect x="12" y="1" width="1" height="1" fill="#2e1c15"/><rect x="2" y="2" width="1" height="1" fill="#2e1c15"/><rect x="3" y="2" width="4" height="1" fill="#bf5500"/><rect x="7" y="2" width="1" height="1" fill="#ffd54a"/><rect x="8" y="2" width="5" height="1" fill="#bf5500"/><rect x="13" y="2" width="1" height="1" fill="#2e1c15"/><rect x="2" y="3" width="1" height="1" fill="#2e1c15"/><rect x="3" y="3" width="10" height="1" fill="#5d4037"/><rect x="13" y="3" width="1" height="1" fill="#2e1c15"/><rect x="2" y="4" width="1" height="1" fill="#2e1c15"/><rect x="3" y="4" width="1" height="1" fill="#5d4037"/><rect x="4" y="4" width="8" height="1" fill="#f3c9a0"/><rect x="12" y="4" width="1" height="1" fill="#5d4037"/><rect x="13" y="4" width="1" height="1" fill="#2e1c15"/><rect x="2" y="5" width="1" height="1" fill="#2e1c15"/><rect x="3" y="5" width="2" height="1" fill="#f3c9a0"/><rect x="6" y="5" width="4" height="1" fill="#f3c9a0"/><rect x="11" y="5" width="2" height="1" fill="#f3c9a0"/><rect x="13" y="5" width="1" height="1" fill="#2e1c15"/><rect x="2" y="6" width="1" height="1" fill="#2e1c15"/><rect x="3" y="6" width="2" height="1" fill="#f3c9a0"/><rect x="6" y="6" width="4" height="1" fill="#f3c9a0"/><rect x="11" y="6" width="2" height="1" fill="#f3c9a0"/><rect x="13" y="6" width="1" height="1" fill="#2e1c15"/><rect x="2" y="7" width="1" height="1" fill="#2e1c15"/><rect x="3" y="7" width="1" height="1" fill="#f19a83"/><rect x="4" y="7" width="8" height="1" fill="#f3c9a0"/><rect x="12" y="7" width="1" height="1" fill="#f19a83"/><rect x="13" y="7" width="1" height="1" fill="#2e1c15"/><rect x="2" y="8" width="1" height="1" fill="#2e1c15"/><rect x="3" y="8" width="4" height="1" fill="#f3c9a0"/><rect x="7" y="8" width="2" height="1" fill="#a0473a"/><rect x="9" y="8" width="4" height="1" fill="#f3c9a0"/><rect x="13" y="8" width="1" height="1" fill="#2e1c15"/><rect x="3" y="9" width="1" height="1" fill="#2e1c15"/><rect x="4" y="9" width="8" height="1" fill="#f3c9a0"/><rect x="12" y="9" width="1" height="1" fill="#2e1c15"/><rect x="4" y="10" width="8" height="1" fill="#2e1c15"/><rect x="3" y="11" width="1" height="1" fill="#2e1c15"/><rect x="4" y="11" width="2" height="1" fill="#fffaf0"/><rect x="6" y="11" width="4" height="1" fill="#bf5500"/><rect x="10" y="11" width="2" height="1" fill="#fffaf0"/><rect x="12" y="11" width="1" height="1" fill="#2e1c15"/><rect x="2" y="12" width="1" height="1" fill="#2e1c15"/><rect x="3" y="12" width="2" height="1" fill="#fffaf0"/><rect x="5" y="12" width="6" height="1" fill="#bf5500"/><rect x="11" y="12" width="2" height="1" fill="#fffaf0"/><rect x="13" y="12" width="1" height="1" fill="#2e1c15"/><rect x="2" y="13" width="1" height="1" fill="#2e1c15"/><rect x="3" y="13" width="1" height="1" fill="#f3c9a0"/><rect x="4" y="13" width="1" height="1" fill="#2e1c15"/><rect x="5" y="13" width="2" height="1" fill="#bf5500"/><rect x="7" y="13" width="2" height="1" fill="#ffd54a"/><rect x="9" y="13" width="2" height="1" fill="#bf5500"/><rect x="11" y="13" width="1" height="1" fill="#2e1c15"/><rect x="12" y="13" width="1" height="1" fill="#f3c9a0"/><rect x="13" y="13" width="1" height="1" fill="#2e1c15"/><rect x="2" y="14" width="1" height="1" fill="#2e1c15"/><rect x="3" y="14" width="1" height="1" fill="#f3c9a0"/><rect x="4" y="14" width="1" height="1" fill="#2e1c15"/><rect x="5" y="14" width="6" height="1" fill="#bf5500"/><rect x="11" y="14" width="1" height="1" fill="#2e1c15"/><rect x="12" y="14" width="1" height="1" fill="#f3c9a0"/><rect x="13" y="14" width="1" height="1" fill="#2e1c15"/><rect x="3" y="15" width="2" height="1" fill="#2e1c15"/><rect x="5" y="15" width="6" height="1" fill="#bf5500"/><rect x="11" y="15" width="2" height="1" fill="#2e1c15"/><rect x="4" y="16" width="1" height="1" fill="#2e1c15"/><rect x="5" y="16" width="6" height="1" fill="#bf5500"/><rect x="11" y="16" width="1" height="1" fill="#2e1c15"/><rect x="4" y="17" width="8" height="1" fill="#2e1c15"/><rect x="5" y="5" width="1" height="1" fill="#2e1c15"/><rect x="10" y="5" width="1" height="1" fill="#2e1c15"/><rect x="5" y="6" width="1" height="1" fill="#2e1c15"/><rect x="10" y="6" width="1" height="1" fill="#2e1c15"/><g class="px-lids"><rect x="5" y="5" width="1" height="2" fill="#f3c9a0"/><rect x="10" y="5" width="1" height="2" fill="#f3c9a0"/></g></g></svg></div>
     <h1>Kasir Gambare House</h1>
     <p>Masukkan PIN untuk mengakses dashboard reservasi &amp; stok kitchen.</p>
     <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="••••••">
@@ -184,8 +284,8 @@ button{cursor:pointer}
   <div class="layout">
     <aside class="sidebar">
       <div class="logo-wrap">
-        <img src="images/logo/Untitled_Artwork-1.png" alt="Gambare House">
-        <div class="logo-text">GAMBARE<small>HOUSE</small></div>
+        <div class="px-avatar"><svg class="px-cashier sm" viewBox="0 0 16 18" shape-rendering="crispEdges" role="img" aria-label="Karakter kasir Gambare House"><g class="px-bob"><rect x="4" y="0" width="8" height="1" fill="#2e1c15"/><rect x="3" y="1" width="1" height="1" fill="#2e1c15"/><rect x="4" y="1" width="8" height="1" fill="#bf5500"/><rect x="12" y="1" width="1" height="1" fill="#2e1c15"/><rect x="2" y="2" width="1" height="1" fill="#2e1c15"/><rect x="3" y="2" width="4" height="1" fill="#bf5500"/><rect x="7" y="2" width="1" height="1" fill="#ffd54a"/><rect x="8" y="2" width="5" height="1" fill="#bf5500"/><rect x="13" y="2" width="1" height="1" fill="#2e1c15"/><rect x="2" y="3" width="1" height="1" fill="#2e1c15"/><rect x="3" y="3" width="10" height="1" fill="#5d4037"/><rect x="13" y="3" width="1" height="1" fill="#2e1c15"/><rect x="2" y="4" width="1" height="1" fill="#2e1c15"/><rect x="3" y="4" width="1" height="1" fill="#5d4037"/><rect x="4" y="4" width="8" height="1" fill="#f3c9a0"/><rect x="12" y="4" width="1" height="1" fill="#5d4037"/><rect x="13" y="4" width="1" height="1" fill="#2e1c15"/><rect x="2" y="5" width="1" height="1" fill="#2e1c15"/><rect x="3" y="5" width="2" height="1" fill="#f3c9a0"/><rect x="6" y="5" width="4" height="1" fill="#f3c9a0"/><rect x="11" y="5" width="2" height="1" fill="#f3c9a0"/><rect x="13" y="5" width="1" height="1" fill="#2e1c15"/><rect x="2" y="6" width="1" height="1" fill="#2e1c15"/><rect x="3" y="6" width="2" height="1" fill="#f3c9a0"/><rect x="6" y="6" width="4" height="1" fill="#f3c9a0"/><rect x="11" y="6" width="2" height="1" fill="#f3c9a0"/><rect x="13" y="6" width="1" height="1" fill="#2e1c15"/><rect x="2" y="7" width="1" height="1" fill="#2e1c15"/><rect x="3" y="7" width="1" height="1" fill="#f19a83"/><rect x="4" y="7" width="8" height="1" fill="#f3c9a0"/><rect x="12" y="7" width="1" height="1" fill="#f19a83"/><rect x="13" y="7" width="1" height="1" fill="#2e1c15"/><rect x="2" y="8" width="1" height="1" fill="#2e1c15"/><rect x="3" y="8" width="4" height="1" fill="#f3c9a0"/><rect x="7" y="8" width="2" height="1" fill="#a0473a"/><rect x="9" y="8" width="4" height="1" fill="#f3c9a0"/><rect x="13" y="8" width="1" height="1" fill="#2e1c15"/><rect x="3" y="9" width="1" height="1" fill="#2e1c15"/><rect x="4" y="9" width="8" height="1" fill="#f3c9a0"/><rect x="12" y="9" width="1" height="1" fill="#2e1c15"/><rect x="4" y="10" width="8" height="1" fill="#2e1c15"/><rect x="3" y="11" width="1" height="1" fill="#2e1c15"/><rect x="4" y="11" width="2" height="1" fill="#fffaf0"/><rect x="6" y="11" width="4" height="1" fill="#bf5500"/><rect x="10" y="11" width="2" height="1" fill="#fffaf0"/><rect x="12" y="11" width="1" height="1" fill="#2e1c15"/><rect x="2" y="12" width="1" height="1" fill="#2e1c15"/><rect x="3" y="12" width="2" height="1" fill="#fffaf0"/><rect x="5" y="12" width="6" height="1" fill="#bf5500"/><rect x="11" y="12" width="2" height="1" fill="#fffaf0"/><rect x="13" y="12" width="1" height="1" fill="#2e1c15"/><rect x="2" y="13" width="1" height="1" fill="#2e1c15"/><rect x="3" y="13" width="1" height="1" fill="#f3c9a0"/><rect x="4" y="13" width="1" height="1" fill="#2e1c15"/><rect x="5" y="13" width="2" height="1" fill="#bf5500"/><rect x="7" y="13" width="2" height="1" fill="#ffd54a"/><rect x="9" y="13" width="2" height="1" fill="#bf5500"/><rect x="11" y="13" width="1" height="1" fill="#2e1c15"/><rect x="12" y="13" width="1" height="1" fill="#f3c9a0"/><rect x="13" y="13" width="1" height="1" fill="#2e1c15"/><rect x="2" y="14" width="1" height="1" fill="#2e1c15"/><rect x="3" y="14" width="1" height="1" fill="#f3c9a0"/><rect x="4" y="14" width="1" height="1" fill="#2e1c15"/><rect x="5" y="14" width="6" height="1" fill="#bf5500"/><rect x="11" y="14" width="1" height="1" fill="#2e1c15"/><rect x="12" y="14" width="1" height="1" fill="#f3c9a0"/><rect x="13" y="14" width="1" height="1" fill="#2e1c15"/><rect x="3" y="15" width="2" height="1" fill="#2e1c15"/><rect x="5" y="15" width="6" height="1" fill="#bf5500"/><rect x="11" y="15" width="2" height="1" fill="#2e1c15"/><rect x="4" y="16" width="1" height="1" fill="#2e1c15"/><rect x="5" y="16" width="6" height="1" fill="#bf5500"/><rect x="11" y="16" width="1" height="1" fill="#2e1c15"/><rect x="4" y="17" width="8" height="1" fill="#2e1c15"/><rect x="5" y="5" width="1" height="1" fill="#2e1c15"/><rect x="10" y="5" width="1" height="1" fill="#2e1c15"/><rect x="5" y="6" width="1" height="1" fill="#2e1c15"/><rect x="10" y="6" width="1" height="1" fill="#2e1c15"/><g class="px-lids"><rect x="5" y="5" width="1" height="2" fill="#f3c9a0"/><rect x="10" y="5" width="1" height="2" fill="#f3c9a0"/></g></g></svg></div>
+        <div class="logo-text">GAMBARE<small>HOUSE</small><span class="px-bubble">Irasshaimase!</span></div>
       </div>
       <nav class="nav">
         <a class="nav-item active" href="#dashboard"><svg viewBox="0 0 24 24"><path d="m4 10 8-6 8 6v9a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z"/></svg>Dashboard</a>
