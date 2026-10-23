@@ -114,3 +114,6 @@ alter table public.stock_movements enable row level security;
 revoke all on table public.stock_items from anon, authenticated;
 revoke all on table public.stock_movements from anon, authenticated;
 revoke all on table public.stock_levels from anon, authenticated;
+
+-- Supaya API Supabase langsung mengenali tabel baru
+notify pgrst, 'reload schema';
