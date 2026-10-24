@@ -33,7 +33,7 @@
         body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--brown-deep); overflow-x: hidden; }
 
         /* ─── CLOUD PARALLAX ─── */
-        #clouds { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        #clouds { position: fixed; inset: 0; pointer-events: none; z-index: 2; overflow: hidden; }
         .cloud {
             position: absolute;
             background: url('images/decor/cloud.webp') center/contain no-repeat;
@@ -670,7 +670,6 @@
             html { scroll-behavior: auto; }
             *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
             .reveal { opacity: 1; transform: none; }
-            #clouds { display: none; }
         }
         #sideCounterBox { max-width: 1000px; margin: -1.5rem auto 2rem; text-align: left; }
         /* ─── PIXEL ACCENTS (ringan) ─── */
