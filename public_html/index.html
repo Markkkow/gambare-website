@@ -33,7 +33,7 @@
         body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--brown-deep); overflow-x: hidden; }
 
         /* ─── CLOUD PARALLAX ─── */
-        #clouds { position: fixed; inset: 0; pointer-events: none; z-index: 2; overflow: hidden; }
+        #clouds { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
         .cloud {
             position: absolute;
             background: url('images/decor/cloud.webp') center/contain no-repeat;
@@ -52,7 +52,7 @@
         .c9  { width:160px; height:89px;  top:10%;  left:82%;    opacity:.07; }
         .c10 { width:120px; height:67px;  top:55%;  left:20%;    opacity:.05; }
         @media (max-width:768px) {
-            .cloud { opacity:.16 !important; }
+            .cloud { opacity:.3 !important; }
         }
 
         /* ─── POLISH: animasi, performa, mobile ─── */
@@ -222,7 +222,7 @@
 
         /* ─── SECTIONS ─── */
         .section { position:relative; z-index:1; padding:5.5rem 5%; text-align:center; scroll-margin-top: 110px; }
-        .section.alt { background:var(--cream-alt); }
+        .section.alt { background:rgba(240,233,225,.55); }
         .eyebrow { display:inline-block; font-size:.7rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-bottom:.7rem; }
         .section-title { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3.5vw,2.6rem); font-weight:700; color:var(--brown-deep); margin-bottom:.7rem; }
         .subtitle { color:var(--brown-warm); font-weight:300; font-size:.97rem; line-height:1.75; max-width:460px; margin:0 auto 3rem; }
