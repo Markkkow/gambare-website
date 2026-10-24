@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" as="image" href="images/hero/2A2A5992.webp">
     <title>Gambare House | Cafe & Beverages</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@300;400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
     <script src="config.js"></script>
@@ -32,8 +33,10 @@
         #clouds { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
         .cloud {
             position: absolute;
-            background: url('images/decor/pngwing.com.png') center/contain no-repeat;
+            background: url('images/decor/cloud.webp') center/contain no-repeat;
             will-change: transform;
+            transition: opacity .6s;
+            left: 0 !important;   /* posisi horizontal diatur JS (phase) */
         }
         .c1  { width:200px; height:111px; top:3%;   left:-30px;  opacity:.07; }
         .c2  { width:140px; height:78px;  top:12%;  left:30%;    opacity:.05; }
@@ -45,6 +48,31 @@
         .c8  { width:210px; height:117px; top:80%;  left:38%;    opacity:.06; }
         .c9  { width:160px; height:89px;  top:10%;  left:82%;    opacity:.07; }
         .c10 { width:120px; height:67px;  top:55%;  left:20%;    opacity:.05; }
+        @media (max-width:768px) {
+            .cloud { opacity:.16 !important; }
+        }
+
+        /* ─── POLISH: animasi, performa, mobile ─── */
+        .reveal { transition: opacity .8s cubic-bezier(.22,1,.36,1), transform .8s cubic-bezier(.22,1,.36,1); transition-delay: var(--d, 0s); will-change: opacity, transform; }
+        .reveal.in { will-change: auto; }
+        .section { content-visibility: auto; contain-intrinsic-size: auto 700px; }
+        .btn { transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s, background .25s, color .25s; }
+        @media (hover:hover) { .btn:hover { transform: translateY(-3px); } }
+        .btn:active { transform: scale(.97); }
+        .hero h1, .hero p, .hero-badge, .hero-btns { animation: heroIn 1s cubic-bezier(.22,1,.36,1) both; }
+        .hero h1 { animation-delay: .15s; } .hero p { animation-delay: .3s; } .hero-btns { animation-delay: .45s; }
+        @keyframes heroIn { from { opacity:0; transform: translateY(26px); } to { opacity:1; transform:none; } }
+        @media (max-width:768px) {
+            .c4,.c6,.c9,.c10 { display:none; }          /* lebih sedikit awan = lebih ringan di HP */
+            html { -webkit-text-size-adjust:100%; }
+            .btn { min-height:48px; }                    /* target sentuh nyaman */
+            .hero-bg-track { transition-duration:.6s; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .hero h1,.hero p,.hero-badge,.hero-btns { animation:none; }
+            .reveal { transition:none; }
+            html { scroll-behavior:auto; }
+        }
 
         /* ─── NAV ─── */
         nav {
@@ -760,10 +788,10 @@
 <!-- ── HERO ── -->
 <header class="hero" id="home">
     <div class="hero-bg-track" id="heroTrack">
-        <div class="bg-img" style="background-image: url('images/hero/2A2A5992.jpg')"></div>
-        <div class="bg-img" style="background-image: url('images/hero/2A2A6006.jpg')"></div>
-        <div class="bg-img" style="background-image: url('images/hero/BEN00019.jpg')"></div>
-        <div class="bg-img" style="background-image: url('images/hero/BEN05942.jpg')"></div>
+        <div class="bg-img" style="background-image: url('images/hero/2A2A5992.webp')"></div>
+        <div class="bg-img" style="background-image: url('images/hero/2A2A6006.webp')"></div>
+        <div class="bg-img" style="background-image: url('images/hero/BEN00019.webp')"></div>
+        <div class="bg-img" style="background-image: url('images/hero/BEN05942.webp')"></div>
     </div>
     <div class="hero-overlay"></div>
     <div class="hero-indicators" id="heroIndicators"></div>
@@ -1472,19 +1500,43 @@ document.addEventListener('keydown', e => {
 /* ════════════════════════════════════════════════
    PARALLAX CLOUDS
 ═══════════════════════════════════════════════════ */
-const clouds = document.querySelectorAll('.cloud');
-let rafPending = false;
-function moveClouds() {
-    const sy = window.scrollY;
+const clouds = Array.from(document.querySelectorAll('.cloud')).map((el, i) => ({
+    el,
+    spd:   parseFloat(el.dataset.spd) || 0.3,   // makin besar = makin dekat (depth)
+    drift: 8 + (i % 5) * 4,                     // px/detik, gerak pelan walau tidak scroll
+    phase: i * 211,                             // offset awal biar tidak sejajar
+    w:     el.offsetWidth
+}));
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let target = window.scrollY, smooth = target, lastT = performance.now(), driftX = 0, cloudsRunning = false;
+
+function cloudFrame(now) {
+    const dt = Math.min(now - lastT, 64) / 1000;
+    lastT = now;
+    target = window.scrollY || window.pageYOffset || 0;
+    smooth += (target - smooth) * Math.min(1, dt * 6);       // easing halus (lerp)
+    driftX += dt;
+    const vw = window.innerWidth;
     clouds.forEach(c => {
-        const spd = parseFloat(c.dataset.spd) || 0.3;
-        c.style.transform = 'translateX(' + (sy * spd) + 'px)';
+        const span = vw + c.w * 2;
+        let x = (c.phase + smooth * c.spd + (reduceMotion ? 0 : driftX * c.drift)) % span;
+        x -= c.w;                                              // wrap mulus, masuk dari luar layar
+        const y = -smooth * c.spd * 0.25 + Math.sin(driftX * 0.4 + c.phase) * 6;  // naik pelan + melayang
+        c.el.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0)';
     });
-    rafPending = false;
+    if (cloudsRunning) requestAnimationFrame(cloudFrame);
 }
-window.addEventListener('scroll', () => {
-    if (!rafPending) { rafPending = true; requestAnimationFrame(moveClouds); }
-}, { passive: true });
+function startClouds() {
+    if (cloudsRunning) return;
+    cloudsRunning = true; lastT = performance.now();
+    requestAnimationFrame(cloudFrame);
+}
+document.addEventListener('visibilitychange', () => {
+    cloudsRunning = false;
+    if (!document.hidden) startClouds();
+});
+window.addEventListener('resize', () => clouds.forEach(c => c.w = c.el.offsetWidth));
+startClouds();
 
 /* ════════════════════════════════════════════════
    NAV SHRINK
@@ -1561,7 +1613,10 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 const ro = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } });
 }, { threshold: 0.12 });
-document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.setProperty('--d', ((i % 4) * 0.08) + 's');   // stagger halus
+    ro.observe(el);
+});
 
 /* ════════════════════════════════════════════════
    SET MIN DATE = today + START LIVE TABLE LISTENER
